@@ -15,7 +15,7 @@ import android.view.ViewGroup;
  */
 public class AboutFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
+
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
