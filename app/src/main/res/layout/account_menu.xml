@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="24dp"
+    android:background="@drawable/rounded_top_dialog"
+    android:elevation="10dp"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="52dp"
+            android:text="Auction"
+            android:textSize="20sp"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="490dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="109dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="57dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="26dp"
+                    android:layout_marginTop="21dp"
+                    android:src="@drawable/account" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="105dp"
+                    android:layout_marginTop="21dp"
+                    android:text="User Name" />
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="105dp"
+                    android:layout_marginTop="57dp"
+                    android:text="Email id" />
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView28"
+                    android:layout_marginTop="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="Manage Account"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView29"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="45dp"
+                    android:text="Sell"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView30"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="45dp"
+                    android:text="About"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="35dp"
+                    android:clickable="true"
+                    android:text="Logout"
+                    android:textColor="#FF0000"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</LinearLayout>

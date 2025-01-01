@@ -37,7 +37,7 @@ public class SignupActivity extends AppCompatActivity {
         TextView loginButton = findViewById(R.id.textView2);
 
         loginButton.setOnClickListener(view -> {
-            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+            Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
             startActivity(intent);
         });
 
@@ -88,7 +88,7 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(SignupActivity.this, "Verification email sent. Please verify and login.",
                                     Toast.LENGTH_LONG).show();
                             // Redirect to login page
-                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish(); // Optional: Finish the sign-up activity
                         } else {

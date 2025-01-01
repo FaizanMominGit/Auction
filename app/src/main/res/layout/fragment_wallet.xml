@@ -6,64 +6,115 @@
     android:layout_height="match_parent"
     tools:context=".WalletFragment">
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:text="Wallet"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.204"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.cardview.widget.CardView
-        android:layout_width="382dp"
-        android:layout_height="167dp"
-        android:layout_marginTop="23dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10">
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Add Radianite to Wallet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
+
+            <EditText
+                android:id="@+id/editTextNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="Enter amount"
+                android:inputType="number"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="39dp"
+                android:text="Add Radianite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="382dp"
+        android:layout_height="167dp"
+        android:layout_marginTop="32dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/textView10"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:layout_marginStart="33dp"
+                android:layout_marginTop="20dp"
+                android:text="Wallet" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView10"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="273dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="259dp"
                 android:text="Total balance" />
 
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/textView11"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="69dp"
-                android:layout_marginEnd="236dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="240dp"
                 android:text="Utilised amount" />
 
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/textView12"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="116dp"
-                android:layout_marginEnd="226dp"
+                android:layout_marginStart="33dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="230dp"
                 android:text="Available balance" />
 
             <TextView
@@ -72,28 +123,28 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="21dp"
-                android:layout_marginEnd="33dp"
+                android:layout_marginTop="55dp"
+                android:layout_marginEnd="32dp"
                 android:text="TextView" />
 
             <TextView
                 android:id="@+id/textView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/textView14"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="74dp"
-                android:layout_marginEnd="28dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="32dp"
                 android:text="TextView" />
 
             <TextView
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/textView15"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="113dp"
-                android:layout_marginEnd="29dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="32dp"
                 android:text="TextView" />
 
             <TextView
@@ -102,47 +153,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="149dp"
-                android:layout_marginTop="69dp"
+                android:layout_marginStart="150dp"
+                android:layout_marginTop="87dp"
                 android:text="Bids"
                 android:textColor="#75000000" />
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Radianite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:ems="10"
-        android:hint="Enter amount"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.378"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:text="Add Radianite to Wallet"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

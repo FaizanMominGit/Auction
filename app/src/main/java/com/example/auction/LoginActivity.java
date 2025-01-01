@@ -30,12 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // User is already logged in, redirect to LandingPage
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // Optional: Finish the current activity
-        }
+
 
         emailInput = findViewById(R.id.editTextText1);
         passwordInput = findViewById(R.id.editTextTextPassword1);

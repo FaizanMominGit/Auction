@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_item_account" android:title="Account" />
-    <item android:id="@+id/menu_item_wallet" android:title="Wallet" />
-    <item android:id="@+id/menu_item_your_bids" android:title="Your Bids" />
-    <item android:id="@+id/menu_item_sell_item" android:title="Sell Item" />
-    <item android:id="@+id/menu_item_about" android:title="About" />
-    <item android:id="@+id/menu_item_log_out" android:title="Log Out" />
-</menu>
