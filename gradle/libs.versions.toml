@@ -21,6 +21,7 @@ firebaseUiAuth = "8.0.2"
 testng = "6.9.6"
 junitJupiter = "5.8.1"
 leanback = "1.0.0"
+firebaseFunctions = "21.1.0"
 
 [libraries]
 activity-v192 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -43,6 +44,7 @@ firebase-ui-auth = { group = "com.firebaseui", name = "firebase-ui-auth", versio
 testng = { group = "org.testng", name = "testng", version.ref = "testng" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

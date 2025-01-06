@@ -5,10 +5,15 @@
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.gms.permission.PROVIDERS" />
 
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" /><uses-feature
-    android:name="android.software.leanback"
-    android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -20,14 +25,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Auction"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ManageBids"
+            android:exported="false" />
         <activity
             android:name=".DummyLeanbackActivity"
-            android:exported="false"
-            android:banner="@drawable/app_banner">
+            android:banner="@drawable/app_banner"
+            android:exported="false">
+
             <!-- Removed LEANBACK_LAUNCHER intent filter -->
         </activity>
-
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
@@ -42,10 +49,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
