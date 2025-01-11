@@ -79,8 +79,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textView28"
-                    android:layout_marginTop="45dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="45dp"
                     android:text="Manage Account"
                     android:textSize="20sp" />
 
@@ -115,8 +115,34 @@
                     android:text="Logout"
                     android:textColor="#FF0000"
                     android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/adminPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView36"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="45dp"
+                    android:layout_marginEnd="0dp"
+                    android:gravity="center"
+                    android:text="Admin Panel"
+                    android:textSize="20sp"
+                    android:visibility="visible" />
+
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="-1dp"
+            app:srcCompat="@drawable/baseline_close_24" />
     </RelativeLayout>
 </LinearLayout>

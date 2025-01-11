@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.PROVIDERS" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -25,6 +25,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Auction"
         tools:targetApi="31">
+        <activity
+            android:name=".AdminUsersControl"
+            android:exported="false" />
+        <activity
+            android:name=".AdminAuctionsControl"
+            android:exported="false" />
+        <activity
+            android:name=".AdminControl"
+            android:exported="false" />
         <activity
             android:name=".ManageBids"
             android:exported="false" />

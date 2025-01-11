@@ -35,7 +35,6 @@ public class SignupActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.editTextTextPassword1);
         Button signupButton = findViewById(R.id.button);
         TextView loginButton = findViewById(R.id.textView2);
-
         loginButton.setOnClickListener(view -> {
             Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
             startActivity(intent);

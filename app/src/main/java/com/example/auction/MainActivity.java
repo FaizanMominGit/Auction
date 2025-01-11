@@ -1,9 +1,5 @@
 package com.example.auction;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +10,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
 
         auth = FirebaseAuth.getInstance();
-
 
         // Check if user is logged in and update UI accordingly
         if (auth.getCurrentUser() == null) {
@@ -106,15 +105,33 @@ public class MainActivity extends AppCompatActivity {
             Dialog dialog = new Dialog(requireActivity());
             dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.account_menu);
+
             TextView sell = dialog.findViewById(R.id.textView30);
             TextView logoutButton = dialog.findViewById(R.id.textView37);
+            TextView adminPanel = dialog.findViewById(R.id.adminPanel);
+            ImageView closeButton = dialog.findViewById(R.id.imageView9);
+            closeButton.setOnClickListener(view -> dismiss());
+
+            // Dismiss dialog when clicking outside
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+
+            adminPanel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Intent to redirect to AdminControl activity
+                    Intent intent = new Intent(getContext(), AdminControl.class);
+                    startActivity(intent);
+                    dismiss(); // Optionally dismiss the dialog after the action
+                }
+            });
 
             sell.setOnClickListener(view -> {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, new SellFragment()); // Replace with SellFragment
                 transaction.addToBackStack(null); // Optional: Add to back stack so you can navigate back
                 transaction.commit(); // Commit the transaction
-                dismiss();
+                dismiss(); // Dismiss the dialog
             });
 
             logoutButton.setOnClickListener(view -> {
