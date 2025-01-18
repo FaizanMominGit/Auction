@@ -22,6 +22,7 @@ testng = "6.9.6"
 junitJupiter = "5.8.1"
 leanback = "1.0.0"
 firebaseFunctions = "21.1.0"
+firebaseStorage = "21.0.1"
 
 [libraries]
 activity-v192 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -45,6 +46,7 @@ testng = { group = "org.testng", name = "testng", version.ref = "testng" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -11,20 +11,31 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,23 +46,33 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 public class SellFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private List<Uri> selectedImageUris = new ArrayList<>();
     private List<String> selectedImagePaths = new ArrayList<>();
+    private List<String> downloadUrls = new ArrayList<>(); // List to store image URLs
     private RecyclerView selectedImagesRecyclerView;
-    private EditText startTimeButton, startDateDisplay, endDateDisplay, endTimeButton;
+    private EditText startTimeButton, startDateDisplay, endDateDisplay, endTimeButton, itemTitle, itemDescription, startingPrice, fullAddress;
+    private Spinner categorySpinner4;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("auction_images");
 
     public SellFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sell, container, false);selectedImagesRecyclerView = view.findViewById(R.id.selectedImagesRecyclerView);
+        View view = inflater.inflate(R.layout.fragment_sell, container, false);
+
+        selectedImagesRecyclerView = view.findViewById(R.id.selectedImagesRecyclerView);
         view.findViewById(R.id.chooseImageButton).setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
@@ -72,7 +93,11 @@ public class SellFragment extends Fragment {
         startDateDisplay = view.findViewById(R.id.startTextDate);
         endDateDisplay = view.findViewById(R.id.endTextDate2);
         endTimeButton = view.findViewById(R.id.endTextTime2);
-
+        itemTitle = view.findViewById(R.id.itemTitle);
+        itemDescription = view.findViewById(R.id.itemDescription);
+        startingPrice = view.findViewById(R.id.startingPrice);
+        categorySpinner4 = view.findViewById(R.id.AuctionItem);
+        fullAddress = view.findViewById(R.id.Fulladdress);
         endDateDisplay.setEnabled(false); // Disable end date EditText initially
 
         final Calendar c = Calendar.getInstance();
@@ -85,61 +110,52 @@ public class SellFragment extends Fragment {
                 view1.setCurrentMinute(minute);
             }
 
-            String amPm = (hourOfDay < 12 || hourOfDay == 24) ? "AM" : "PM";
+            String amPm = (hourOfDay < 12.0 || hourOfDay == 24) ? "AM" : "PM";
             int displayHour = (hourOfDay == 0 || hourOfDay == 12) ? 12 : hourOfDay % 12;
             String selectedTime = String.format("%02d:%02d %s", displayHour, minute, amPm);
             startTimeButton.setText(selectedTime);
 
         }, currentHour, currentMinute, false).show());
-
         startDateDisplay.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+            // Initialize datePickerDialog here
+            DatePickerDialog startDateDialog = new DatePickerDialog(getActivity(),
                     (view12, year1, monthOfYear, dayOfMonth) -> {
                         String selectedDateString = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year1);
                         startDateDisplay.setText(selectedDateString);
 
-                        // Enable end date EditText after start date selection
+                        // Enable end date EditText
                         endDateDisplay.setEnabled(true);
                     },
                     year, month, day);
 
-            datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-            datePickerDialog.show();
+            startDateDialog.getDatePicker().setMinDate(System.currentTimeMillis()); // Prevent selecting past dates
+            startDateDialog.show();
         });
 
         endDateDisplay.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog endDateDialog = getDatePickerDialog();
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                    (view12, year1, monthOfYear, dayOfMonth) -> {
-                        String selectedDateString = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year1);
-                        endDateDisplay.setText(selectedDateString);
-                    },
-                    year, month, day);
-
-            // Set minimum date for end date DatePickerDialog
+            // Get the selected start date
             String startDateString = startDateDisplay.getText().toString();
+
+            // Set minimum date for end date picker only if start date is valid
             if (!startDateString.isEmpty()) {
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                    Date startDate = dateFormat.parse(startDateString);
-                    datePickerDialog.getDatePicker().setMinDate(startDate.getTime());
+                    Calendar minEndDate = getCalendar(startDateString);
+
+                    endDateDialog.getDatePicker().setMinDate(minEndDate.getTimeInMillis());
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    // Handle parsing error, e.g., show a Toast message
                     Toast.makeText(getContext(), "Invalid start date format", Toast.LENGTH_SHORT).show();
                 }
             }
 
-            datePickerDialog.show();
+            endDateDialog.show();
         });
 
         endTimeButton.setOnClickListener(v -> new TimePickerDialog(getActivity(), (view1, hourOfDay, minute) -> {
@@ -155,12 +171,46 @@ public class SellFragment extends Fragment {
 
         }, currentHour, currentMinute, false).show());
 
-
         // Submit button click listener
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(v -> onSubmitButtonClicked());
 
+        // Set up the Spinner
+        String[] categories = {"Electronics", "Clothing", "Home", "Furniture", "Books", "Sports", "Other"}; // Example categories
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
+        categorySpinner4.setAdapter(adapter);
+
         return view;
+    }
+
+    @NonNull
+    private Calendar getCalendar(String startDateString) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date startDate = dateFormat.parse(startDateString);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(startDate);
+
+        // Set minimum date for end date as the day after start date
+        Calendar minEndDate = Calendar.getInstance();
+        minEndDate.setTime(startDate);
+        minEndDate.add(Calendar.DAY_OF_MONTH, 1);
+        return minEndDate;
+    }
+
+    @NonNull
+    private DatePickerDialog getDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog endDateDialog = new DatePickerDialog(getActivity(),
+                (view12, year1, monthOfYear, dayOfMonth) -> {
+                    String selectedDateString = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year1);
+                    endDateDisplay.setText(selectedDateString);
+                },
+                year, month, day);
+        return endDateDialog;
     }
 
     @Override
@@ -189,7 +239,8 @@ public class SellFragment extends Fragment {
         }
     }
 
-    private void openGallery() {Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -198,7 +249,8 @@ public class SellFragment extends Fragment {
     private String getLocalPathFromUri(Uri uri) {
         String path = null;
         try {
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);File file = new File(requireContext().getCacheDir(), "image_" + System.currentTimeMillis() + ".jpg");
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+            File file = new File(requireContext().getCacheDir(), "image_" + System.currentTimeMillis() + ".jpg");
             FileOutputStream outputStream = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             int len;
@@ -215,10 +267,155 @@ public class SellFragment extends Fragment {
         return path;
     }
 
-    private void onSubmitButtonClicked() {
-        for (String imagePath : selectedImagePaths) {
-            // ... (Your logic to handle the images, e.g., upload to server) ...
+    private void uploadImagesToStorage(List<String> imagePaths, String itemId) {
+        // Create a list of tasks to upload each image
+        List<Task<UploadTask.TaskSnapshot>> uploadTasks = new ArrayList<>();
+        for (String path : imagePaths) {
+            File file = new File(path);
+            StorageReference imageRef = storageRef.child(itemId + "/" + UUID.randomUUID().toString() + ".jpg"); // Unique filename
+            UploadTask uploadTask = imageRef.putFile(Uri.fromFile(file));
+            uploadTasks.add(uploadTask);
         }
+        Task<Void> allTasks = Tasks.whenAll(uploadTasks.toArray(new Task[0]));
+
+        allTasks.addOnSuccessListener(aVoid -> {
+            // All upload tasks completed successfully
+            for (Task<UploadTask.TaskSnapshot> task : uploadTasks) {
+                if (task.isSuccessful()) {
+                    // Get download URL for successful uploads
+                    Task<Uri> downloadUrlTask = task.getResult().getStorage().getDownloadUrl();
+                    downloadUrlTask.addOnSuccessListener(uri -> {
+                        downloadUrls.add(uri.toString());
+                        if (downloadUrls.size() == imagePaths.size()) {
+                            // All download URLs obtained
+                            saveAuctionItemToFirestore();
+                        }
+                    }).addOnFailureListener(e -> {
+                        // Handle download URL error
+                    });
+                } else {
+                    // Handle individual upload failures
+                    Log.e("UploadError", "Image upload failed: " + task.getException().getMessage());
+                }
+            }
+        }).addOnFailureListener(e -> {
+            // Handle overall failure (e.g., network issues)
+            Log.e("UploadError", "Overall upload failure: " + e.getMessage());
+        });
+    }
+
+    private void saveAuctionItemToFirestore() {
+        String userId = auth.getCurrentUser().getUid();
+        Map<String, Object> data = new HashMap<>();
+        data.put("title", itemTitle.getText().toString());
+        data.put("description", itemDescription.getText().toString());
+        data.put("startDate", startDateDisplay.getText().toString());
+        data.put("startTime", startTimeButton.getText().toString());
+        data.put("endDate", endDateDisplay.getText().toString());
+        data.put("endTime", endTimeButton.getText().toString());
+        data.put("startingPrice", Double.parseDouble(startingPrice.getText().toString()));
+        data.put("category", categorySpinner4.getSelectedItem().toString());
+        data.put("address", fullAddress.getText().toString());
+        data.put("userId", userId);
+        data.put("imageUrls", downloadUrls);
+
+        db.collection("auctionItems").document()
+                .set(data)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Item added successfully!", Toast.LENGTH_SHORT).show();
+                    // Clear input fields
+                    itemTitle.setText("");
+                    itemDescription.setText("");
+                    startDateDisplay.setText("");
+                    startTimeButton.setText("");
+                    endDateDisplay.setText("");
+                    endTimeButton.setText("");
+                    startingPrice.setText("");
+                    fullAddress.setText("");
+                    selectedImageUris.clear();
+                    selectedImagePaths.clear();
+                    downloadUrls.clear();
+                    selectedImagesRecyclerView.getAdapter().notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to add item.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void onSubmitButtonClicked() {
+        // Get values from input fields
+        String title = itemTitle.getText().toString();
+        String description = itemDescription.getText().toString();
+        String startDateString = startDateDisplay.getText().toString();
+        String startTimeString = startTimeButton.getText().toString();
+        String endDateString = endDateDisplay.getText().toString();
+        String endTimeString = endTimeButton.getText().toString();
+        String startingPriceStr = startingPrice.getText().toString();
+        String category = categorySpinner4.getSelectedItem().toString();
+        String address = fullAddress.getText().toString();
+
+        // Validate input fields
+        if (title.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter item title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (category.isEmpty()) {
+            Toast.makeText(getContext(), "Please select category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (description.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter item description", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (startDateString.isEmpty()) {
+            Toast.makeText(getContext(), "Please select start date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (startTimeString.isEmpty()) {
+            Toast.makeText(getContext(), "Please select start time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (endDateString.isEmpty()) {
+            Toast.makeText(getContext(), "Please select end date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (endTimeString.isEmpty()) {
+            Toast.makeText(getContext(), "Please select end time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (startingPriceStr.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter starting price", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (selectedImageUris.isEmpty()) {
+            Toast.makeText(getContext(), "Please select at least one image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (address.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter full address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Parse start and end date/time
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        Date startDate = null;
+        Date startTime = null;
+        Date endDate = null;
+        Date endTime = null;
+        try {
+            startDate = dateFormat.parse(startDateString);
+            startTime = timeFormat.parse(startTimeString);
+            endDate = dateFormat.parse(endDateString);
+            endTime = timeFormat.parse(endTimeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Invalid date/time format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Upload images to Firebase Storage
+        uploadImagesToStorage(selectedImagePaths, UUID.randomUUID().toString());
     }
 
     private class SelectedImagesAdapter extends RecyclerView.Adapter<SelectedImagesAdapter.ViewHolder> {

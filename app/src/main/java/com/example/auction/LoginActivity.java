@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,7 +32,18 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        if (currentUser != null) {
+            // Check if user is already logged in and email is verified
+            if (currentUser.isEmailVerified()) {
+                // User is logged in and verified, redirect to MainActivity
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish(); // Optional: Finish the current activity
+            } else {
+                // User is logged in but email not verified, prompt to verify
+                showToast("Please verify your email before proceeding.");
+            }
+        }
 
         emailInput = findViewById(R.id.editTextText1);
         passwordInput = findViewById(R.id.editTextTextPassword1);
@@ -91,9 +104,10 @@ public class LoginActivity extends AppCompatActivity {
                     findViewById(R.id.button).setEnabled(true);
 
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, check if email is verified
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null && user.isEmailVerified()) {
+                            // User is logged in and verified, redirect to MainActivity
                             showToast("Login successful!");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
