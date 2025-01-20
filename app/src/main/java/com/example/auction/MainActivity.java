@@ -41,17 +41,16 @@ public class MainActivity extends AppCompatActivity {
         if (auth.getCurrentUser() == null) {
             imageView.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             imageView.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
         }
+
+        // Login button listener
         loginButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
 
-        // Handle home button to load Home
-        home.setOnClickListener(view -> getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new Home())
-                .commit());
+        // Handle home button click to load the Home fragment
+        home.setOnClickListener(view -> loadFragment(new Home()));
 
         // Bottom navigation setup
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -59,16 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set initial fragment to Home if not restored
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new Home())
-                    .commit();
+            loadFragment(new Home());
         }
-
-        // Account icon click listener to open account menu dialog
-        imageView.setOnClickListener(view -> {
-            AccountMenuDialogFragment dialogFragment = new AccountMenuDialogFragment();
-            dialogFragment.show(getSupportFragmentManager(), "account_menu_dialog");
-        });
 
         // Bottom navigation item selection handling
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -96,6 +87,19 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        // Account icon click listener to open account menu dialog
+        imageView.setOnClickListener(view -> {
+            AccountMenuDialogFragment dialogFragment = new AccountMenuDialogFragment();
+            dialogFragment.show(getSupportFragmentManager(), "account_menu_dialog");
+        });
+    }
+
+    // Helper method to load fragments
+    private void loadFragment(androidx.fragment.app.Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 
     // Dialog fragment for account menu
@@ -116,27 +120,22 @@ public class MainActivity extends AppCompatActivity {
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true);
 
-            adminPanel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Intent to redirect to AdminControl activity
-                    Intent intent = new Intent(getContext(), AdminControl.class);
-                    startActivity(intent);
-                    dismiss(); // Optionally dismiss the dialog after the action
-                }
+            adminPanel.setOnClickListener(view -> {
+                // Intent to redirect to AdminControl activity
+                Intent intent = new Intent(getContext(), AdminControl.class);
+                startActivity(intent);
+                dismiss(); // Optionally dismiss the dialog after the action
             });
 
             sell.setOnClickListener(view -> {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new SellFragment()); // Replace with SellFragment
-                transaction.addToBackStack(null); // Optional: Add to back stack so you can navigate back
-                transaction.commit(); // Commit the transaction
+                // Replace fragment with SellFragment
+                loadFragment(new SellFragment());
                 dismiss(); // Dismiss the dialog
             });
 
             logoutButton.setOnClickListener(view -> {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class)); // Use getActivity()
+                startActivity(new Intent(getActivity(), LoginActivity.class));
                 if (getActivity() != null) {
                     getActivity().finish();
                 }
@@ -145,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             return dialog;
+        }
+
+        // Helper method to load fragments inside dialog
+        private void loadFragment(androidx.fragment.app.Fragment fragment) {
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 }

@@ -162,14 +162,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView49">
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/liveRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Live" />
 
                 <RadioButton
-                    android:id="@+id/radioButton"
+                    android:id="@+id/scheduledRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Scheduled" />

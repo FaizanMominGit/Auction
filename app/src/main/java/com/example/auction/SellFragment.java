@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -61,9 +62,11 @@ public class SellFragment extends Fragment {
     private RecyclerView selectedImagesRecyclerView;
     private EditText startTimeButton, startDateDisplay, endDateDisplay, endTimeButton, itemTitle, itemDescription, startingPrice, fullAddress;
     private Spinner categorySpinner4;
+    private RadioGroup radioGroup;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("auction_images");
+    private String status;
 
     public SellFragment() {
     }
@@ -99,7 +102,7 @@ public class SellFragment extends Fragment {
         categorySpinner4 = view.findViewById(R.id.AuctionItem);
         fullAddress = view.findViewById(R.id.Fulladdress);
         endDateDisplay.setEnabled(false); // Disable end date EditText initially
-
+        radioGroup = view.findViewById(R.id.radioGroup);
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);
         int currentMinute = c.get(Calendar.MINUTE);
@@ -174,6 +177,13 @@ public class SellFragment extends Fragment {
         // Submit button click listener
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(v -> onSubmitButtonClicked());
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.liveRadioButton) {
+                status = "live";
+            } else if (checkedId == R.id.scheduledRadioButton) {
+                status = "scheduled";
+            }
+        });
 
         // Set up the Spinner
         String[] categories = {"Electronics", "Clothing", "Home", "Furniture", "Books", "Sports", "Other"}; // Example categories
@@ -305,8 +315,11 @@ public class SellFragment extends Fragment {
     }
 
     private void saveAuctionItemToFirestore() {
+        // Use a fixed document ID for the auction item
+        String auctionItemId = UUID.randomUUID().toString(); // Generate a unique ID for the auction item
         String userId = auth.getCurrentUser().getUid();
         Map<String, Object> data = new HashMap<>();
+        data.put("auctionItemId", auctionItemId); // Add the auction item ID to the data
         data.put("title", itemTitle.getText().toString());
         data.put("description", itemDescription.getText().toString());
         data.put("startDate", startDateDisplay.getText().toString());
@@ -318,8 +331,10 @@ public class SellFragment extends Fragment {
         data.put("address", fullAddress.getText().toString());
         data.put("userId", userId);
         data.put("imageUrls", downloadUrls);
+        // Add the status to the data
+        data.put("status", status);
 
-        db.collection("auctionItems").document()
+        db.collection("auctionItems").document(auctionItemId) // Use the auction item ID as the document ID
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "Item added successfully!", Toast.LENGTH_SHORT).show();
@@ -393,6 +408,10 @@ public class SellFragment extends Fragment {
         }
         if (address.isEmpty()) {
             Toast.makeText(getContext(), "Please enter full address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (status == null || status.isEmpty()) {
+            Toast.makeText(getContext(), "Please select auction status", Toast.LENGTH_SHORT).show();
             return;
         }
 

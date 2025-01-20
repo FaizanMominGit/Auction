@@ -21,17 +21,6 @@
             android:layout_height="match_parent"
             android:background="#FFFFFF">
 
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:src="@drawable/img"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView1" />
-
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
@@ -43,106 +32,52 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/Live"
                 android:layout_width="65dp"
                 android:layout_height="18dp"
-                android:layout_marginBottom="7dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="19dp"
-                android:layout_marginTop="13dp"
-                android:layout_marginBottom="6dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/recyclerView1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:layout_marginTop="40dp"
-                android:orientation="horizontal"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Live"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/viewpager" />
 
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="13dp"
+                android:text="Scheduled"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/liveRecyclerView" />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView1"
+                android:id="@+id/liveRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Live" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/scheduledRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/imageView5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_recent_history" />
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="21dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="22dp"
-                app:layout_constraintEnd_toStartOf="@+id/imageView6"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/btn_star_big_on" />
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/logo" />
-
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/imageView8"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_day" />
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.696"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

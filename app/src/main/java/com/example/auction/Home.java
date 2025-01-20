@@ -1,102 +1,91 @@
 package com.example.auction;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Home#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Home extends Fragment {
-    ViewPager2 viewPager2;
-    ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public Home() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private RecyclerView liveRecyclerView, scheduledRecyclerView;
+    private FirebaseFirestore db;
+    private AuctionAdapter liveAuctionsAdapter, scheduledAuctionsAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the fragment layout
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Initialize Firebase Firestore instance
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize RecyclerViews and their adapters
+        liveRecyclerView = view.findViewById(R.id.liveRecyclerView);
+        liveRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        liveAuctionsAdapter = new AuctionAdapter(getContext(), new ArrayList<>());
+        liveRecyclerView.setAdapter(liveAuctionsAdapter);
+
+        scheduledRecyclerView = view.findViewById(R.id.scheduledRecyclerView);
+        scheduledRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        scheduledAuctionsAdapter = new AuctionAdapter(getContext(), new ArrayList<>());
+        scheduledRecyclerView.setAdapter(scheduledAuctionsAdapter);
+
+        fetchAndSetLiveAuctions();
+        fetchAndSetScheduledAuctions();
+
+        return view;
     }
 
-
-        @Override
-        public void onViewCreated(View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            viewPager2 = view.findViewById(R.id.viewpager); // Call findViewById on the view
-
-            int[] images = {R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e};
-            String[] heading = {"Baked","Grilled","Dessert","Italian","Shakes"};
-            String[] desc = {getString(R.string.a_desc),
-                    getString(R.string.b_desc),
-                    getString(R.string.c_desc),
-                    getString(R.string.d_desc)
-                    ,getString(R.string.e_desc)};
-
-            viewPagerItemArrayList = new ArrayList<>();
-
-            for (int i =0; i< images.length ; i++){
-
-                ViewPagerItem viewPagerItem = new ViewPagerItem(images[i],heading[i],desc[i]);
-                viewPagerItemArrayList.add(viewPagerItem);
-
-            }
-
-            VPAdapter vpAdapter = new VPAdapter(viewPagerItemArrayList);
-
-            viewPager2.setAdapter(vpAdapter);
-
-            viewPager2.setClipToPadding(false);
-
-            viewPager2.setClipChildren(false);
-
-            viewPager2.setOffscreenPageLimit(2);
-
-            viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_home, container,false);
-        }
+    private void fetchAndSetLiveAuctions() {
+        db.collection("auctionItems")
+                .whereEqualTo("status", "live")
+                .orderBy("startDate", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Auction> auctions = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Auction auction = document.toObject(Auction.class);
+                            Log.d("Home", "Auction Title (Live): " + auction.getTitle()); // Log for debugging
+                            auctions.add(auction);
+                        }
+                        liveAuctionsAdapter.setAuctions(auctions);
+                    } else {
+                        Log.e("Home", "Error fetching live auctions", task.getException());
+                    }
+                });
     }
+
+    private void fetchAndSetScheduledAuctions() {
+        db.collection("auctionItems")
+                .whereEqualTo("status", "scheduled")
+                .orderBy("startDate", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Auction> auctions = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Auction auction = document.toObject(Auction.class);
+                            Log.d("Home", "Auction Title (Scheduled): " + auction.getTitle()); // Log for debugging
+                            auctions.add(auction);
+                        }
+                        scheduledAuctionsAdapter.setAuctions(auctions);
+                    } else {
+                        Log.e("Home", "Error fetching scheduled auctions", task.getException());
+                    }
+                });
+    }
+}
