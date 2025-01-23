@@ -54,7 +54,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/productName" />
 
             <Button
-                android:id="@+id/EndBidding"
+                android:id="@+id/BidButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
@@ -62,10 +62,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView41" />
+                app:layout_constraintTop_toBottomOf="@+id/initial_price" />
 
             <TextView
-                android:id="@+id/textView41"
+                android:id="@+id/initial_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -82,12 +82,12 @@
                 app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EndBidding"
+                app:layout_constraintTop_toBottomOf="@+id/BidButton"
                 android:background="@drawable/card_outline">
 
 
             <TextView
-                    android:id="@+id/textView42"
+                    android:id="@+id/discryption"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"

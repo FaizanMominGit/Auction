@@ -1,64 +1,56 @@
 package com.example.auction;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.ScrollingMovementMethod;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AboutFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.fragment.app.Fragment;
+
 public class AboutFragment extends Fragment {
-
-
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public AboutFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AboutFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AboutFragment newInstance(String param1, String param2) {
-        AboutFragment fragment = new AboutFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        View view = inflater.inflate(R.layout.fragment_about, container, false);
+        TextView aboutTextView = view.findViewById(R.id.about);
+
+        String aboutContent = "About Us\n\n" +
+                "Welcome to our Auctions App, a project developed as part of our diploma in Computer Engineering. " +
+                "This app represents our dedication to learning and applying advanced software development techniques. " +
+                "It has been created using Java, XML, and Firebase as part of our C++ project under the esteemed guidance of Ms. Hafsah Siddique.\n\n" +
+                "Team Members:\n" +
+                "1. Md Faizan Momin (2205690343)\n" +
+                "2. Aasim Ansari (2205690314)\n" +
+                "3. Salman Firfirey (2205690341)\n" +
+                "4. Amaan Kazi (2205690352)\n" +
+                "5. Saqlain Bashier (2205690342)\n\n" +
+                "Our goal is to deliver a platform where users can explore and participate in auctions seamlessly, leveraging modern tools and technologies. " +
+                "This project is a testament to our collaborative efforts and technical growth.\n\n" +
+                "Thank you for supporting us on this journey!";
+
+        // Create a SpannableString
+        SpannableString spannableContent = new SpannableString(aboutContent);
+
+        // Apply bold to "Ms."
+        int msStartIndex = aboutContent.indexOf("Ms.");
+        int msEndIndex = msStartIndex + 19;
+        spannableContent.setSpan(new StyleSpan(Typeface.BOLD), msStartIndex, msEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Set text to TextView
+        aboutTextView.setText(spannableContent);
+        aboutTextView.setMovementMethod(new ScrollingMovementMethod());
+
+        return view;
     }
 }

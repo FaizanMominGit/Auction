@@ -1,8 +1,8 @@
 package com.example.auction;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -49,9 +52,23 @@ public class AuctionAdapter extends RecyclerView.Adapter<AuctionAdapter.AuctionV
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AuctionDetailsFragment.class);
-                intent.putExtra("auctionItemId", auction.getAuctionItemId());
-                context.startActivity(intent);
+                // Assuming 'auction' is your auction item object
+                String auctionItemId = auction.getAuctionItemId();
+
+                // Create a Bundle to pass data
+                Bundle bundle = new Bundle();
+                bundle.putString("auctionItemId", auctionItemId);
+
+                // Create a Fragment and set arguments
+                AuctionDetailsFragment fragment = new AuctionDetailsFragment();
+                fragment.setArguments(bundle);
+
+                // Navigate to the fragment
+                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager(); // or requireActivity().getSupportFragmentManager() if using Fragment
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment); // Replace with your container ID
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
         holder.auctionItemId = auction.getAuctionItemId();

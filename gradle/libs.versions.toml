@@ -23,6 +23,7 @@ junitJupiter = "5.8.1"
 leanback = "1.0.0"
 firebaseFunctions = "21.1.0"
 firebaseStorage = "21.0.1"
+media3Common = "1.5.1"
 
 [libraries]
 activity-v192 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -47,6 +48,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

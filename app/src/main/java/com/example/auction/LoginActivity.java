@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
@@ -22,67 +25,107 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
     private FirebaseAuth mAuth;
-
+    private ProgressBar progressBar;
+    private Button loginButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // Set the correct layout
+        setContentView(R.layout.activity_login);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // Check if user is already logged in and email is verified
-            if (currentUser.isEmailVerified()) {
-                // User is logged in and verified, redirect to MainActivity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Optional: Finish the current activity
-            } else {
-                // User is logged in but email not verified, prompt to verify
-                showToast("Please verify your email before proceeding.");
-            }
-        }
-
+        // Find UI elements
         emailInput = findViewById(R.id.editTextText1);
         passwordInput = findViewById(R.id.editTextTextPassword1);
         TextView forgotPasswordTextView = findViewById(R.id.textView2);
-        Button loginButton = findViewById(R.id.button);
+        loginButton = findViewById(R.id.button);
         Button signUpButton = findViewById(R.id.button2);
+        progressBar = findViewById(R.id.progressBar); // Assuming you have a ProgressBar in your layout
 
-        forgotPasswordTextView.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPassword.class);
-            startActivity(intent);
-        });
+        // Check if user is already logged in
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            redirectToMainActivity();
+        } else if (currentUser != null && !currentUser.isEmailVerified()) {
+            showToast("Please verify your email before proceeding.");
+        }
 
-        loginButton.setOnClickListener(view -> {
-            String email = emailInput.getText().toString();
-            String password = passwordInput.getText().toString();
+        // Set click listeners
+        forgotPasswordTextView.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, ForgotPassword.class)));
+        signUpButton.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignupActivity.class)));
+        loginButton.setOnClickListener(view -> attemptLogin());
 
-            if (isFieldEmpty(emailInput)) {
-                emailInput.setError("Email cannot be empty");
-            } else if (!isValidEmail(email)) {
-                emailInput.setError("Invalid email format");
-            } else if (isFieldEmpty(passwordInput)) {
-                passwordInput.setError("Password cannot be empty");
-            } else if (password.length() < 6) {
-                passwordInput.setError("Password must be at least 6 characters");
-            } else {
-                performLogin(email, password);
-            }
-        });
-
-        signUpButton.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-            startActivity(intent);
-        });
-
+        // Window insets handling
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
+    }
+
+    private void attemptLogin() {
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
+
+        if (isFieldEmpty(emailInput)) {
+            emailInput.setError("Email cannot be empty");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            emailInput.setError("Invalid email format");
+            return;
+        }
+
+        if (isFieldEmpty(passwordInput)) {
+            passwordInput.setError("Password cannot be empty");
+            return;
+        }
+
+        if (password.length() < 6) {
+            passwordInput.setError("Password must be at least 6 characters");
+            return;
+        }
+
+        // Show progress indicator
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        loginButton.setEnabled(false);
+
+        performLogin(email, password);
+    }
+
+    private void performLogin(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    // Hide progress indicator
+                    progressBar.setVisibility(ProgressBar.GONE);
+                    loginButton.setEnabled(true);
+
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null && user.isEmailVerified()) {
+                            showToast("Login successful!");
+                            redirectToMainActivity();
+                        } else {
+                            showToast("Please verify your email before logging in.");
+                        }
+                    } else {
+                        Exception exception = task.getException();
+                        if (exception instanceof FirebaseAuthInvalidUserException) {
+                            showToast("User not found.");
+                        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+                            showToast("Incorrect password.");
+                        } else {
+                            showToast("Authentication failed.");
+                        }
+                    }
+                });
+    }
+
+    private void redirectToMainActivity() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 
     private boolean isFieldEmpty(EditText editText) {
@@ -92,35 +135,6 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isValidEmail(String email) {
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
         return pattern.matcher(email).matches();
-    }
-
-    private void performLogin(String email, String password) {
-        // Disable login button to prevent multiple clicks
-        findViewById(R.id.button).setEnabled(false);
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    // Re-enable login button
-                    findViewById(R.id.button).setEnabled(true);
-
-                    if (task.isSuccessful()) {
-                        // Sign in success, check if email is verified
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null && user.isEmailVerified()) {
-                            // User is logged in and verified, redirect to MainActivity
-                            showToast("Login successful!");
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish(); // Optional: Finish the login activity
-                        } else {
-                            // User's email is not verified
-                            showToast("Please verify your email before logging in.");
-                        }
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        showToast("Authentication failed.");
-                    }
-                });
     }
 
     private void showToast(String message) {

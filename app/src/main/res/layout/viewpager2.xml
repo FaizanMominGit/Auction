@@ -25,7 +25,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/ivimage"
+                android:id="@+id/imagevp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
@@ -36,39 +36,6 @@
                 android:layout_marginEnd="-1dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/fui_ic_anonymous_white_24dp" />
-
-            <TextView
-                android:id="@+id/tvDesc"
-                android:layout_width="309dp"
-                android:layout_height="112dp"
-                android:layout_below="@id/tvHeading"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="29dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="26dp"
-
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="20dp"
-                android:text="a_desc" />
-
-            <TextView
-                android:id="@+id/tvHeading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="29dp"
-                android:layout_marginTop="48dp"
-                android:layout_marginEnd="222dp"
-                android:text="Baked"
-                android:textColor="@color/black"
-                android:textSize="26dp"
-                android:textStyle="bold" />
 
 
         </RelativeLayout>

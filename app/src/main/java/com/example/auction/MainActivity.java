@@ -11,12 +11,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.media3.common.util.UnstableApi;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -104,10 +111,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Dialog fragment for account menu
     public static class AccountMenuDialogFragment extends DialogFragment {
+        @NonNull
+        @OptIn(markerClass = UnstableApi.class)
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Dialog dialog = new Dialog(requireActivity());
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            Objects.requireNonNull(dialog.getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.account_menu);
 
             TextView sell = dialog.findViewById(R.id.textView30);
@@ -115,11 +124,48 @@ public class MainActivity extends AppCompatActivity {
             TextView adminPanel = dialog.findViewById(R.id.adminPanel);
             ImageView closeButton = dialog.findViewById(R.id.imageView9);
             closeButton.setOnClickListener(view -> dismiss());
-
+            TextView Email_id = dialog.findViewById(R.id.Email_id);
+            TextView User_Name = dialog.findViewById(R.id.User_Name);
+            TextView ManageAccount = dialog.findViewById(R.id.Manage_Account);
+            TextView about = dialog.findViewById(R.id.About);
+            about.setOnClickListener(view -> {
+                loadFragment(new AboutFragment());
+                dismiss();
+            });
             // Dismiss dialog when clicking outside
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true);
 
+            ManageAccount.setOnClickListener(view -> {
+                loadFragment(new AccountFragment());
+                dismiss();
+            });
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                String email = user.getEmail();
+                String uid = user.getUid();
+
+                FirebaseFirestore.getInstance().collection("users")
+                        .document(uid)
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                String name = documentSnapshot.getString("name");
+                                Email_id.setText(email);
+                                User_Name.setText(name);
+                            } else {
+                                // Handle case where user document doesn't exist
+                                androidx.media3.common.util.Log.d("AccountMenuDialog", "User document not found");
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            // Handle errors
+                            androidx.media3.common.util.Log.e("AccountMenuDialog", "Error getting user document", e);
+                        });
+            } else {
+                // Handle case where user is not logged in
+                androidx.media3.common.util.Log.d("AccountMenuDialog", "User not logged in");
+            }
             adminPanel.setOnClickListener(view -> {
                 // Intent to redirect to AdminControl activity
                 Intent intent = new Intent(getContext(), AdminControl.class);

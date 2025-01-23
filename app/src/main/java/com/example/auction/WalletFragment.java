@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,10 +28,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Scanner;
 
 public class WalletFragment extends Fragment {
@@ -45,8 +44,19 @@ public class WalletFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        // Initialize Firebase Firestore and get the current user
-        db = FirebaseFirestore.getInstance();
+        TextView bids = view.findViewById(R.id.Bids);
+        bids.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new BidsFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+                // Initialize Firebase Firestore and get the current user
+                db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         amountEditText = view.findViewById(R.id.editTextNumber);
@@ -62,7 +72,7 @@ public class WalletFragment extends Fragment {
         }
 
         countryTextView.setText("Country: " + country);
-        saveUserCountryToFirestore(country);
+
 
         // Set up editor action listener to trigger currency conversion on "Done" or "Enter" key
         amountEditText.setOnEditorActionListener((v, actionId, event) -> {
@@ -109,26 +119,7 @@ public class WalletFragment extends Fragment {
     }
 
     // Method to save the user's country to Firebase Firestore
-    private void saveUserCountryToFirestore(String country) {
-        if (user != null) {
-            String userId = user.getUid();
-            // Create a map to store country information
-            Map<String, Object> userCountryData = new HashMap<>();
-            userCountryData.put("country", country);
 
-            // Save to Firestore
-            db.collection("users").document(userId)
-                    .set(userCountryData)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Country saved to Firestore");
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.d("Firestore", "Error saving country: " + e.getMessage());
-                    });
-        } else {
-            Log.d("Firestore", "User is not logged in.");
-        }
-    }
 
     // Method to convert the currency
     private void convertCurrency(double radianite) {

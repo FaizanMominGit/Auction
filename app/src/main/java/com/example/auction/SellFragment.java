@@ -351,6 +351,7 @@ public class SellFragment extends Fragment {
                     selectedImagePaths.clear();
                     downloadUrls.clear();
                     selectedImagesRecyclerView.getAdapter().notifyDataSetChanged();
+
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to add item.", Toast.LENGTH_SHORT).show();
