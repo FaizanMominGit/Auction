@@ -1,5 +1,6 @@
 package com.example.auction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,10 @@ public class AccountFragment extends Fragment {
         TextView wallet = view.findViewById(R.id.Wallet);
         TextView details = view.findViewById(R.id.Details);
         // In your AccountFragment's onCreateView method
+        details.setOnClickListener(v -> {
+           Intent intent = new Intent(getActivity(), DetailsActivity.class);
+           startActivity(intent);
+                });
         about.setOnClickListener(v -> {
             AboutFragment targetFragment = new AboutFragment(); // Replace with your target fragment
             getParentFragmentManager().beginTransaction()

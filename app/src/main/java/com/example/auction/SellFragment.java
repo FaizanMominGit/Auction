@@ -106,19 +106,31 @@ public class SellFragment extends Fragment {
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);
         int currentMinute = c.get(Calendar.MINUTE);
+        startTimeButton.setOnClickListener(v -> {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                    (view1, hourOfDay, minute) -> {
+                        // Round to nearest 15 minutes
+                        minute = Math.round(minute / 15.0f) * 15;
 
-        startTimeButton.setOnClickListener(v -> new TimePickerDialog(getActivity(), (view1, hourOfDay, minute) -> {
-            if (minute % 15 != 0) {
-                minute = Math.round(minute / 15.0f) * 15;
-                view1.setCurrentMinute(minute);
-            }
+                        // Handle 60 minutes correctly
+                        if (minute == 60) {
+                            minute = 0;
+                            hourOfDay++;
+                        }
 
-            String amPm = (hourOfDay < 12.0 || hourOfDay == 24) ? "AM" : "PM";
-            int displayHour = (hourOfDay == 0 || hourOfDay == 12) ? 12 : hourOfDay % 12;
-            String selectedTime = String.format("%02d:%02d %s", displayHour, minute, amPm);
-            startTimeButton.setText(selectedTime);
+                        // Set the correct minute in the TimePickerDialog
+                        view1.setCurrentMinute(minute);
 
-        }, currentHour, currentMinute, false).show());
+                        String amPm = (hourOfDay < 12 || hourOfDay == 24) ? "AM" : "PM";
+                        int displayHour = (hourOfDay == 0 || hourOfDay == 12) ? 12 : hourOfDay % 12;
+                        String selectedTime = String.format("%02d:%02d %s", displayHour, minute, amPm);
+                        startTimeButton.setText(selectedTime);
+                    },
+                    currentHour,
+                    currentMinute,
+                    false);
+            timePickerDialog.show();
+        });
         startDateDisplay.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -160,19 +172,27 @@ public class SellFragment extends Fragment {
 
             endDateDialog.show();
         });
-
         endTimeButton.setOnClickListener(v -> new TimePickerDialog(getActivity(), (view1, hourOfDay, minute) -> {
-            if (minute % 15 != 0) {
-                minute = Math.round(minute / 15.0f) * 15;
-                view1.setCurrentMinute(minute);
+            // Round to the nearest 15 minutes
+            minute = Math.round(minute / 15.0f) * 15;
+
+            // Check if the rounded minute is 60 and adjust the hour accordingly
+            if (minute == 60) {
+                minute = 0;
+                hourOfDay++;
+                // Handle the case where hour exceeds 23 (to wrap back to 0)
+                if (hourOfDay == 24) {
+                    hourOfDay = 0;
+                }
             }
 
-            String amPm = (hourOfDay < 12 || hourOfDay == 24) ? "AM" : "PM";
+            String amPm = (hourOfDay < 12) ? "AM" : "PM";
             int displayHour = (hourOfDay == 0 || hourOfDay == 12) ? 12 : hourOfDay % 12;
             String selectedTime = String.format("%02d:%02d %s", displayHour, minute, amPm);
             endTimeButton.setText(selectedTime);
 
         }, currentHour, currentMinute, false).show());
+
 
         // Submit button click listener
         Button submitButton = view.findViewById(R.id.submitButton);

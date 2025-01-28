@@ -12,6 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
+        app:cardCornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +36,7 @@
                 android:id="@+id/editTextNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="36dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="20dp"
                 android:ems="10"
                 android:hint="Enter amount"
@@ -63,6 +64,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
 
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="48dp"
+                android:layout_height="53dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/radianite"
+                app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -72,6 +85,7 @@
         android:layout_height="167dp"
         android:layout_marginTop="56dp"
 
+        app:cardCornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +142,7 @@
                 android:text="Available balance" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/Totalbalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -138,20 +152,20 @@
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/Utilisedamount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView14"
+                android:layout_below="@+id/Totalbalance"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/Availablebalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView15"
+                android:layout_below="@+id/Utilisedamount"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"

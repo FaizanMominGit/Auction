@@ -13,7 +13,7 @@
         android:layout_height="200dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="80dp"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,26 +24,26 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/users"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="75dp"
-                android:layout_marginStart="48dp"
-                android:text="users"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Auctions"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
                 android:id="@+id/Auctions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginVertical="75dp"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="68dp"
                 android:text="Auctions"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/users"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="75dp"
+                android:layout_marginStart="44dp"
+                android:text="users"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/Auctions"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

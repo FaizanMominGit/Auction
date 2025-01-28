@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView2"
+        android:id="@+id/searchRecyclerView"
         android:layout_width="365dp"
         android:layout_height="650dp"
         android:layout_marginTop="14dp"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Result For Search"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
+        app:layout_constraintBottom_toTopOf="@+id/searchRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

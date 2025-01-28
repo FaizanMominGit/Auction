@@ -36,22 +36,11 @@
             </androidx.viewpager2.widget.ViewPager2>
 
             <TextView
-                android:id="@+id/auctionTypeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:foregroundTint="#000000"
-                android:text="Type"
-                app:layout_constraintEnd_toEndOf="@+id/viewPager2"
-                app:layout_constraintTop_toTopOf="@+id/viewPager2" />
-
-            <TextView
                 android:id="@+id/productName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="26dp"
+                android:layout_marginTop="40dp"
                 android:text="Product Name"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -105,21 +94,32 @@
                 android:id="@+id/start_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="84dp"
+                android:layout_marginStart="208dp"
                 android:layout_marginTop="16dp"
                 android:text="Start Date"
-                app:layout_constraintStart_toEndOf="@+id/productHeighestPrice"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productName" />
 
             <TextView
                 android:id="@+id/end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="84dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginStart="208dp"
+                android:layout_marginTop="8dp"
                 android:text="End Date"
-                app:layout_constraintStart_toEndOf="@+id/productHeighestPrice"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/start_date" />
+
+            <TextView
+                android:id="@+id/auctionTypeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="268dp"
+                android:layout_marginTop="4dp"
+                android:foregroundTint="#000000"
+                android:text="Type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewPager2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

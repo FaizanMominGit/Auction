@@ -25,18 +25,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/itemTitle"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/itemTitleLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Name of product"
-                android:inputType="text"
-                android:minWidth="200dp"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView31" />
+                app:layout_constraintTop_toBottomOf="@+id/textView31">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/itemTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:minWidth="200dp"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView32"
@@ -46,20 +52,26 @@
                 android:text="Address"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/itemTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/itemTitleLayout" />
 
-            <EditText
-                android:id="@+id/Fulladdress"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/FulladdressLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Full address"
-                android:inputType="text"
-                android:minWidth="200dp"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView32" />
+                app:layout_constraintTop_toBottomOf="@+id/textView32">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/Fulladdress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:minWidth="200dp"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView33"
@@ -69,20 +81,26 @@
                 android:text="Description"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Fulladdress" />
+                app:layout_constraintTop_toBottomOf="@+id/FulladdressLayout" />
 
-            <EditText
-                android:id="@+id/itemDescription"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/itemDescriptionLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Enter details"
-                android:inputType="text"
-                android:minWidth="200dp"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView33" />
+                app:layout_constraintTop_toBottomOf="@+id/textView33">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/itemDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:minWidth="200dp"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView35"
@@ -102,7 +120,7 @@
                 android:text="@string/product_image"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endTextTime2" />
+                app:layout_constraintTop_toBottomOf="@+id/endTextTimeLayout" />
 
             <Button
                 android:id="@+id/chooseImageButton"
@@ -145,11 +163,11 @@
                 android:id="@+id/textView49"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="30dp"
                 android:text="Auction Type"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AuctionItem" />
+                app:layout_constraintTop_toBottomOf="@+id/AuctionItemLayout" />
 
             <RadioGroup
                 android:id="@+id/radioGroup"
@@ -166,70 +184,98 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="10dp"
+                    android:paddingStart="10dp"
                     android:text="Live" />
 
                 <RadioButton
                     android:id="@+id/scheduledRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="10dp"
                     android:text="Scheduled" />
             </RadioGroup>
 
-            <EditText
-                android:id="@+id/startTextDate"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/startTextDateLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:focusable="false"
                 android:hint="Start Date"
-                android:inputType="date"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView35" />
+                app:layout_constraintTop_toBottomOf="@+id/textView35">
 
-            <EditText
-                android:id="@+id/endTextDate2"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/startTextDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/endTextDateLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:focusable="false"
                 android:hint="End Date"
-                android:inputType="date"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startTextDate" />
+                app:layout_constraintTop_toBottomOf="@+id/startTextDateLayout">
 
-            <EditText
-                android:id="@+id/startTextTime"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/endTextDate2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/startTextTimeLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:focusable="false"
                 android:hint="Start Time"
-                android:inputType="time"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endTextDate2" />
+                app:layout_constraintTop_toBottomOf="@+id/endTextDateLayout">
 
-            <EditText
-                android:id="@+id/endTextTime2"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/startTextTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="time"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/endTextTimeLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:focusable="false"
                 android:hint="End Time"
-                android:inputType="time"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startTextTime" />
+                app:layout_constraintTop_toBottomOf="@+id/startTextTimeLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/endTextTime2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="time"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/textView44"
@@ -239,20 +285,26 @@
                 android:text="Starting Bid"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/itemDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/itemDescriptionLayout" />
 
-            <EditText
-                android:id="@+id/startingPrice"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/startingPriceLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Starting Bid"
-                android:inputType="number"
-                android:padding="8dp"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView44" />
+                app:layout_constraintTop_toBottomOf="@+id/textView44">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/startingPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textViewCategory"
@@ -261,23 +313,29 @@
                 android:layout_marginTop="16dp"
                 android:text="Category"
                 android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent
-                "
-                app:layout_constraintTop_toBottomOf="@+id/startingPrice" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startingPriceLayout" />
 
-            <Spinner
-                android:id="@+id/AuctionItem"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/AuctionItemLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Select Category"
-                android:padding="8dp"
-                android:textSize="16sp"
-                android:outlineAmbientShadowColor="#665C5C"
-                android:outlineSpotShadowColor="#908282"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCategory" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewCategory">
+
+                <Spinner
+                    android:id="@+id/AuctionItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:outlineAmbientShadowColor="#665C5C"
+                    android:outlineSpotShadowColor="#908282"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/textView46"
@@ -287,7 +345,8 @@
                 android:text="Category"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startingPrice" />
+                app:layout_constraintTop_toBottomOf="@+id/startingPrice"
+                android:visibility="gone"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.cardview.widget.CardView>

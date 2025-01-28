@@ -10,9 +10,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.auction" />
-                  <option name="mobileSdkAppId" value="1:144860196257:android:bc0b0a971f07ab9a752fe0" />
-                  <option name="projectId" value="auction-18e6f" />
-                  <option name="projectNumber" value="144860196257" />
+                  <option name="mobileSdkAppId" value="1:1069137837682:android:5a8943781dac207c07cceb" />
+                  <option name="projectId" value="auction-d7ab9" />
+                  <option name="projectNumber" value="1069137837682" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

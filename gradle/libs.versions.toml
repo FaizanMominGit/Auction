@@ -24,6 +24,7 @@ leanback = "1.0.0"
 firebaseFunctions = "21.1.0"
 firebaseStorage = "21.0.1"
 media3Common = "1.5.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
 activity-v192 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -49,6 +50,7 @@ leanback = { group = "androidx.leanback", name = "leanback", version.ref = "lean
 firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
