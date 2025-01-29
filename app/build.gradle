@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.5.1")
     implementation libs.play.services.maps
     implementation libs.activity.v192
+    implementation libs.navigation.fragment
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
     // AndroidX dependencies

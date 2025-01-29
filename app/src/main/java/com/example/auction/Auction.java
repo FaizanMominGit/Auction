@@ -1,6 +1,8 @@
 package com.example.auction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Auction {
     private String auctionItemId;
@@ -16,9 +18,30 @@ public class Auction {
     private String userId;
     private List<String> imageUrls;
     private String status;
+    private Double highestBid;
+    private String highestBidder;
+    private List<Map<String, Object>> bidders;
 
     // Required default constructor for Firebase deserialization
     public Auction() {
+    }
+
+    // Constructor to initialize highestBid with startingPrice
+    public Auction(String title, String description, Double startingPrice, String category, String address, String startDate, String startTime, String endDate, String endTime, String userId, List<String> imageUrls, String status) {
+        this.title = title;
+        this.description = description;
+        this.startingPrice = startingPrice;
+        this.highestBid = startingPrice; // Initialize highestBid to startingPrice
+        this.category = category;
+        this.address = address;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endDate = endDate;
+        this.endTime = endTime;
+        this.userId = userId;
+        this.imageUrls = imageUrls;
+        this.status = status;
+        this.bidders = new ArrayList<>(); // Initialize bidders list
     }
 
     public String getAuctionItemId() {
@@ -123,5 +146,29 @@ public class Auction {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Double getHighestBid() {
+        return highestBid;
+    }
+
+    public void setHighestBid(Double highestBid) {
+        this.highestBid = highestBid;
+    }
+
+    public String getHighestBidder() {
+        return highestBidder;
+    }
+
+    public void setHighestBidder(String highestBidder) {
+        this.highestBidder = highestBidder;
+    }
+
+    public List<Map<String, Object>> getBidders() {
+        return bidders;
+    }
+
+    public void setBidders(List<Map<String, Object>> bidders) {
+        this.bidders = bidders;
     }
 }
