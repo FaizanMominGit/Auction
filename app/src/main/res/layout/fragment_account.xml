@@ -13,6 +13,7 @@
     tools:context=".AccountFragment">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -100,5 +101,6 @@
                 android:text="User Name" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

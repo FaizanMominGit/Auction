@@ -33,7 +33,6 @@ public class SignupActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_signup);
 
-        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -71,14 +70,11 @@ public class SignupActivity extends AppCompatActivity {
                 name.setError("Name cannot be empty");
             } else if (isFieldEmpty(age)) {
                 age.setError("Age cannot be empty");
-            }
-            else if (!isValidAge(age.getText().toString())) {
+            } else if (!isValidAge(Age)) {
                 age.setError("Age must be 18 or older");
-            }
-            else if (!isValidPhoneNumber(phone.getText().toString())) {
+            } else if (!isValidPhoneNumber(Phone)) {
                 phone.setError("Phone number must be at least 10 digits");
-            }
-            else {
+            } else {
                 createUserAccount(email, password, Name, Age, Phone);
             }
         });
@@ -87,10 +83,17 @@ public class SignupActivity extends AppCompatActivity {
     private boolean isValidPhoneNumber(String phoneNumber) {
         return phoneNumber.length() >= 10;
     }
+
     private boolean isValidAge(String ageString) {
+        try {
             int age = Integer.parseInt(ageString);
             return age >= 18;
+        } catch (NumberFormatException e) {
+            return false; // Handle cases where age is not a valid integer
+        }
     }
+
+
     private boolean isFieldEmpty(EditText editText) {
         return editText.getText().toString().trim().isEmpty();
     }
@@ -99,40 +102,45 @@ public class SignupActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign up success, send verification email and save user details
                         FirebaseUser user = mAuth.getCurrentUser();
-                        sendVerificationEmail(user);
-                        saveUserDetailsToFirestore(user, name, age, phone);
+                        if (user != null) {
+                            String uid = user.getUid();
+
+                            sendVerificationEmail(user);
+
+                            saveUserDetailsToFirestore(user, name, age, phone, uid);
+                        } else {
+                            Toast.makeText(SignupActivity.this, "User creation failed.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        // If sign up fails, display a message to the user.
-                        Toast.makeText(SignupActivity.this, "Authentication failed.",
+                        Toast.makeText(SignupActivity.this, "Authentication failed: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();
+                        Log.e("SignupActivity", "Authentication failed", task.getException());
                     }
                 });
     }
 
-    private void saveUserDetailsToFirestore(FirebaseUser user, String name, String age, String phone) {
-        if (user != null) {
-            String userId = user.getUid();
-            Map<String, Object> userDetails = new HashMap<>();
-            userDetails.put("name", name);
-            userDetails.put("email", user.getEmail());
-            userDetails.put("age", age);
-            userDetails.put("phone", phone);
+    private void saveUserDetailsToFirestore(FirebaseUser user, String name, String age, String phone, String uid) {
+        Map<String, Object> userDetails = new HashMap<>();
+        userDetails.put("name", name);
+        userDetails.put("email", user.getEmail());
+        userDetails.put("age", age);
+        userDetails.put("phone", phone);
+        userDetails.put("uid", uid);
+        userDetails.put("disabled", false);
 
-            db.collection("users")
-                    .document(userId)
-                    .set(userDetails)
-                    .addOnSuccessListener(aVoid -> {
-                        // Data saved successfully
-                        Toast.makeText(SignupActivity.this, "User details saved.", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        // Error saving data
-                        Toast.makeText(SignupActivity.this, "Error saving user details.", Toast.LENGTH_SHORT).show();
-                        Log.e("SignupActivity", "Error saving user details", e);
+        db.collection("users").document(uid)
+                .set(userDetails)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(SignupActivity.this, "User details saved.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(SignupActivity.this, "Error saving user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("SignupActivity", "Error saving user details", e);
+                    user.delete().addOnFailureListener(e2 -> {
+                        Log.e("SignupActivity", "Error deleting user from Auth after Firestore failure", e2);
                     });
-        }
+                });
     }
 
     private void sendVerificationEmail(FirebaseUser user) {
@@ -142,10 +150,9 @@ public class SignupActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(SignupActivity.this, "Verification email sent. Please verify and login.",
                                     Toast.LENGTH_LONG).show();
-                            // Redirect to login page
                             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
-                            finish(); // Optional: Finish the sign-up activity
+                            finish();
                         } else {
                             Toast.makeText(SignupActivity.this, "Failed to send verification email.",
                                     Toast.LENGTH_SHORT).show();

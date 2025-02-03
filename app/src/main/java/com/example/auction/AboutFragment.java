@@ -28,7 +28,7 @@ public class AboutFragment extends Fragment {
         String aboutContent = "About Us\n\n" +
                 "Welcome to our Auctions App, a project developed as part of our diploma in Computer Engineering. " +
                 "This app represents our dedication to learning and applying advanced software development techniques. " +
-                "It has been created using Java, XML, and Firebase as part of our C++ project under the esteemed guidance of Ms. Hafsah Siddique.\n\n" +
+                "It has been created using Java, XML, and Firebase as part of our CPP project under the esteemed guidance of Ms. Hafsah Siddique.\n\n" +
                 "Team Members:\n" +
                 "1. Md Faizan Momin (2205690343)\n" +
                 "2. Aasim Ansari (2205690314)\n" +

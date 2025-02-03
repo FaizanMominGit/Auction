@@ -166,6 +166,7 @@ public class AuctionDetailsFragment extends Fragment {
 
         builder.show();
     }
+
     private void placeBid(double bidAmount) {
         DocumentReference auctionRef = db.collection("auctionItems").document(auctionItemId);
         DocumentReference userRef = db.collection("users").document(currentUserId);
@@ -193,12 +194,14 @@ public class AuctionDetailsFragment extends Fragment {
                     throw new RuntimeException("Auction data is null");
                 }
 
-                if (!auction.getStatus().equals("live")) {
+                if (!"live".equals(auction.getStatus())) {
                     throw new RuntimeException("Auction is not live");
                 }
 
                 double currentHighestBid = auction.getHighestBid() != null ? auction.getHighestBid() : 0.0;
+                String previousHighestBidderId = auctionSnapshot.getString("highestBidder");
 
+                // Ensure the new bid is higher than the current highest bid
                 if (bidAmount <= currentHighestBid) {
                     throw new RuntimeException("Bid must be greater than the current highest bid");
                 }
@@ -207,16 +210,29 @@ public class AuctionDetailsFragment extends Fragment {
                 userTotalBalance = (userTotalBalance != null) ? userTotalBalance : 0.0;
 
                 // Initialize utilisedBalance if it's null and set it to 0.0
-                if (userUtilisedBalance == null) {
-                    userUtilisedBalance = 0.0;
-                    transaction.update(userRef, "utilisedBalance", userUtilisedBalance); // Initialize in Firestore
-                } else {
-                    userUtilisedBalance = userUtilisedBalance != null ? userUtilisedBalance : 0.0;
-                }
+                userUtilisedBalance = (userUtilisedBalance != null) ? userUtilisedBalance : 0.0;
 
                 // Check for sufficient balance
                 if (bidAmount > userTotalBalance) {
                     throw new RuntimeException("Insufficient balance");
+                }
+
+                // Refund previous highest bidder if they exist and are different from the current user
+                if (previousHighestBidderId != null && !previousHighestBidderId.equals(currentUserId)) {
+                    DocumentReference previousBidderRef = db.collection("users").document(previousHighestBidderId);
+                    DocumentSnapshot previousBidderSnapshot = transaction.get(previousBidderRef);
+
+                    if (previousBidderSnapshot.exists()) {
+                        Double prevTotalBalance = previousBidderSnapshot.getDouble("totalBalance");
+                        Double prevUtilisedBalance = previousBidderSnapshot.getDouble("utilisedBalance");
+
+                        prevTotalBalance = (prevTotalBalance != null) ? prevTotalBalance : 0.0;
+                        prevUtilisedBalance = (prevUtilisedBalance != null) ? prevUtilisedBalance : 0.0;
+
+                        // Refund the amount of the previous highest bid
+                        double refundAmount = currentHighestBid;
+                        transaction.update(previousBidderRef, "utilisedBalance", prevUtilisedBalance - refundAmount);
+                    }
                 }
 
                 // Update highest bid and highest bidder
@@ -227,6 +243,8 @@ public class AuctionDetailsFragment extends Fragment {
                 Map<String, Object> bidderData = new HashMap<>();
                 bidderData.put("userId", currentUserId);
                 bidderData.put("bidAmount", bidAmount);
+
+                // Update bidders array in Firestore
                 transaction.update(auctionRef, "bidders", FieldValue.arrayUnion(bidderData));
 
                 // Update user's utilized balance
@@ -237,13 +255,12 @@ public class AuctionDetailsFragment extends Fragment {
             }
         }).addOnSuccessListener(aVoid -> {
             Toast.makeText(getContext(), "Bid placed successfully", Toast.LENGTH_SHORT).show();
-            // Additional success handling code...
+            updateHighestBidDisplay(); // Optional: Update UI with the new highest bid
         }).addOnFailureListener(e -> {
             Toast.makeText(getContext(), "Failed to place bid: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("AuctionDetailsFragment", "Failed to place bid", e);
         });
     }
-
 
     private void updateHighestBidDisplay() {
         db.collection("auctionItems").document(auctionItemId).get().addOnCompleteListener(task -> {
@@ -263,23 +280,10 @@ public class AuctionDetailsFragment extends Fragment {
         });
     }
 
-    private void fetchAvailableBalanceAfterBid() {
-        fetchAvailableBalance(new AvailableBalanceCallback() {
-            @Override
-            public void onAvailableBalanceFetched(double balance) {
-                // Optional: Update UI with the new available balance if needed
-                availableBalance = balance;
-            }
 
-            @Override
-            public void onFetchError(Exception e) {
-                Log.e("AuctionDetailsFragment", "Error fetching available balance after bid", e);
-            }
-        });
-    }
 
     private void fetchAvailableBalance(AvailableBalanceCallback callback) {
-        FirebaseUser currentUser = auth.getCurrentUser(); // Corrected from mAuth to auth
+        FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             String uid = currentUser.getUid();
             DocumentReference userRef = db.collection("users").document(uid);
@@ -289,10 +293,12 @@ public class AuctionDetailsFragment extends Fragment {
                     Double totalBalance = documentSnapshot.getDouble("totalBalance");
                     Double utilisedBalance = documentSnapshot.getDouble("utilisedBalance");
 
-                    totalBalance = totalBalance == null ? 0.0 : totalBalance; // Default to 0.0 if null
-                    utilisedBalance = utilisedBalance == null ? 0.0 : utilisedBalance; // Default to 0.0 if null
+                    if (totalBalance == null) totalBalance = 0.0;
+                    if (utilisedBalance == null) utilisedBalance = 0.0;
 
-                    availableBalance = totalBalance - utilisedBalance;
+                    // Compute available balance dynamically instead of fetching from Firestore
+                    double availableBalance = totalBalance - utilisedBalance;
+
                     callback.onAvailableBalanceFetched(availableBalance);
                 } else {
                     callback.onFetchError(new Exception("User document not found"));
@@ -302,4 +308,5 @@ public class AuctionDetailsFragment extends Fragment {
             callback.onFetchError(new Exception("User not logged in"));
         }
     }
+
 }

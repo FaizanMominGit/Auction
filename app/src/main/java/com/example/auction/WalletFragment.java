@@ -260,60 +260,38 @@ public class WalletFragment extends Fragment {
 
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    // Document exists, update the existing fields
                     Double currentTotalBalance = documentSnapshot.getDouble("totalBalance");
                     Double currentUtilisedBalance = documentSnapshot.getDouble("utilisedBalance");
 
-                    if (currentTotalBalance == null) {
-                        currentTotalBalance = 0.0;
-                    }
-                    if (currentUtilisedBalance == null) {
-                        currentUtilisedBalance = 0.0;
-                    }
+                    if (currentTotalBalance == null) currentTotalBalance = 0.0;
+                    if (currentUtilisedBalance == null) currentUtilisedBalance = 0.0;
 
                     double newTotalBalance = currentTotalBalance + amount;
-                    double newAvailableBalance = newTotalBalance - currentUtilisedBalance;
 
                     Map<String, Object> walletData = new HashMap<>();
                     walletData.put("totalBalance", newTotalBalance);
-                    walletData.put("availableBalance", newAvailableBalance);
+
+                    // No need to store `availableBalance` in Firestore, always compute it dynamically
 
                     userRef.update(walletData)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(getContext(), "Amount added to wallet", Toast.LENGTH_SHORT).show();
-                                fetchWalletData();
+                                fetchWalletData();  // Refresh UI
                                 amountEditText.setText("");
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getContext(), "Failed to add amount", Toast.LENGTH_SHORT).show();
                                 Log.e("Firebase", "Error adding amount to Firestore", e);
                             });
-                } else {
-                    // Document does not exist, create a new one with utilisedBalance set to null
-                    Map<String, Object> newUser = new HashMap<>();
-                    newUser.put("totalBalance", amount);
-                    newUser.put("availableBalance", amount);
-                    newUser.put("utilisedBalance", null); // Set utilisedBalance to null
-
-                    userRef.set(newUser)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(getContext(), "New user created", Toast.LENGTH_SHORT).show();
-                                fetchWalletData();
-                                amountEditText.setText("");
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "Failed to create new user", Toast.LENGTH_SHORT).show();
-                                Log.e("Firebase", "Error creating new user", e);
-                            });
                 }
             }).addOnFailureListener(e -> {
-                Toast.makeText(getContext(), "Failed to add amount", Toast.LENGTH_SHORT).show();
-                Log.e("Firebase", "Error adding amount to Firestore", e);
+                Log.e("Firebase", "Error fetching wallet data", e);
             });
         } else {
             Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void fetchWalletData() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -326,13 +304,10 @@ public class WalletFragment extends Fragment {
                     Double totalBalance = documentSnapshot.getDouble("totalBalance");
                     Double utilisedBalance = documentSnapshot.getDouble("utilisedBalance");
 
-                    if (totalBalance == null) {
-                        totalBalance = 0.0;
-                    }
-                    if (utilisedBalance == null) {
-                        utilisedBalance = 0.0;
-                    }
+                    if (totalBalance == null) totalBalance = 0.0;
+                    if (utilisedBalance == null) utilisedBalance = 0.0;
 
+                    // Compute available balance dynamically
                     double availableBalance = totalBalance - utilisedBalance;
 
                     totalAmountTextView.setText(String.valueOf(totalBalance));
@@ -348,4 +323,5 @@ public class WalletFragment extends Fragment {
             });
         }
     }
+
 }

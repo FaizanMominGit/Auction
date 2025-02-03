@@ -5,16 +5,22 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.media3.common.util.UnstableApi;
 
@@ -31,16 +37,21 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView, home;
     FirebaseAuth auth;
     Button loginButton;
+    EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set status bar and navigation bar color using ContextCompat
+
+
         // Initialize views
         home = findViewById(R.id.imageView);
         imageView = findViewById(R.id.account);
         loginButton = findViewById(R.id.loginButton);
+        searchEditText = findViewById(R.id.searchEditText);
 
         auth = FirebaseAuth.getInstance();
 
@@ -72,24 +83,16 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.item1) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new Home())
-                        .commit();
+                loadFragment(new Home());
                 return true;
             } else if (itemId == R.id.item2) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new BidsFragment())
-                        .commit();
+                loadFragment(new BidsFragment());
                 return true;
             } else if (itemId == R.id.item3) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new WalletFragment())
-                        .commit();
+                loadFragment(new WalletFragment());
                 return true;
             } else if (itemId == R.id.item4) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AccountFragment())
-                        .commit();
+                loadFragment(new AccountFragment());
                 return true;
             }
             return false;
@@ -100,17 +103,38 @@ public class MainActivity extends AppCompatActivity {
             AccountMenuDialogFragment dialogFragment = new AccountMenuDialogFragment();
             dialogFragment.show(getSupportFragmentManager(), "account_menu_dialog");
         });
+
+        // Search EditText listener for "Enter" key press
+        searchEditText.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                String query = searchEditText.getText().toString();
+                navigateToSearchFragment(query);
+                return true;
+            }
+            return false;
+        });
     }
 
     // Helper method to load fragments
-    private void loadFragment(androidx.fragment.app.Fragment fragment) {
+    private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
 
+    // Method to navigate to SearchListFragment and pass the search query
+    private void navigateToSearchFragment(String query) {
+        SearchListFragment searchListFragment = new SearchListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("searchQuery", query);
+        searchListFragment.setArguments(bundle);
+        loadFragment(searchListFragment);
+    }
+
     // Dialog fragment for account menu
     public static class AccountMenuDialogFragment extends DialogFragment {
+
         @NonNull
         @OptIn(markerClass = UnstableApi.class)
         @Override
@@ -121,17 +145,20 @@ public class MainActivity extends AppCompatActivity {
 
             TextView sell = dialog.findViewById(R.id.textView30);
             TextView logoutButton = dialog.findViewById(R.id.textView37);
-            TextView adminPanel = dialog.findViewById(R.id.adminPanel);
+
             ImageView closeButton = dialog.findViewById(R.id.imageView9);
             closeButton.setOnClickListener(view -> dismiss());
+
             TextView Email_id = dialog.findViewById(R.id.Email_id);
             TextView User_Name = dialog.findViewById(R.id.User_Name);
             TextView ManageAccount = dialog.findViewById(R.id.Manage_Account);
             TextView about = dialog.findViewById(R.id.About);
+
             about.setOnClickListener(view -> {
                 loadFragment(new AboutFragment());
                 dismiss();
             });
+
             // Dismiss dialog when clicking outside
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true);
@@ -140,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new AccountFragment());
                 dismiss();
             });
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 String email = user.getEmail();
@@ -154,38 +182,47 @@ public class MainActivity extends AppCompatActivity {
                                 Email_id.setText(email);
                                 User_Name.setText(name);
                             } else {
-                                // Handle case where user document doesn't exist
-                                androidx.media3.common.util.Log.d("AccountMenuDialog", "User document not found");
+                                Log.d("AccountMenuDialog", "User document not found");
                             }
                         })
-                        .addOnFailureListener(e -> {
-                            // Handle errors
-                            androidx.media3.common.util.Log.e("AccountMenuDialog", "Error getting user document", e);
-                        });
+                        .addOnFailureListener(e -> Log.e("AccountMenuDialog", "Error getting user document", e));
             } else {
-                // Handle case where user is not logged in
-                androidx.media3.common.util.Log.d("AccountMenuDialog", "User not logged in");
+                Log.d("AccountMenuDialog", "User not logged in");
             }
-            adminPanel.setOnClickListener(view -> {
-                // Intent to redirect to AdminControl activity
-                Intent intent = new Intent(getContext(), AdminControl.class);
-                startActivity(intent);
-                dismiss(); // Optionally dismiss the dialog after the action
-            });
 
             sell.setOnClickListener(view -> {
-                // Replace fragment with SellFragment
-                loadFragment(new SellFragment());
-                dismiss(); // Dismiss the dialog
+                if (user != null) {
+                    String uid = user.getUid();
+
+                    FirebaseFirestore.getInstance().collection("users")
+                            .document(uid)
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    String kycStatus = documentSnapshot.getString("kyc");
+                                    if ("done".equals(kycStatus)) {
+                                        loadFragment(new SellFragment());
+                                        dismiss();
+                                    } else {
+                                        Toast.makeText(getContext(), "Please complete your KYC first.", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getContext(), DetailsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                } else {
+                                    Log.d("AccountMenuDialog", "User document not found");
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.e("AccountMenuDialog", "Error getting user document", e));
+                } else {
+                    Log.d("AccountMenuDialog", "User not logged in");
+                }
             });
 
             logoutButton.setOnClickListener(view -> {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
-                if (getActivity() != null) {
-                    getActivity().finish();
-                }
-                dismiss(); // Dismiss the dialog
+                if (getActivity() != null) getActivity().finish();
+                dismiss();
             });
 
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -193,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Helper method to load fragments inside dialog
-        private void loadFragment(androidx.fragment.app.Fragment fragment) {
+        private void loadFragment(Fragment fragment) {
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);

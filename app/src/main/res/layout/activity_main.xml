@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#131921"
+        android:background="@color/_131921"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +40,7 @@
             android:layout_gravity="center">
 
             <EditText
-                android:id="@+id/editTextText"
+                android:id="@+id/searchEditText"
                 android:layout_width="189dp"
                 android:layout_height="38dp"
                 android:background="@drawable/edittext_rounded"
@@ -51,7 +52,7 @@
                 android:textColorHint="#7E7C7C" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/searchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="37dp"
                 android:layout_gravity="right"
@@ -68,13 +69,14 @@
             android:text="Login"
             android:visibility="gone" />
     </androidx.appcompat.widget.Toolbar>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/bottomNavigationView"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -82,7 +84,7 @@
         style="@style/BottomNavigationViewStyle"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#FFFFFF"
+        android:background="@color/Secondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
