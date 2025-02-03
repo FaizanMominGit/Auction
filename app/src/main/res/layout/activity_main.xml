@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".MainActivity">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:background="@color/_131921"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:elevation="4dp"
+        android:paddingTop="24dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -43,9 +46,11 @@
                 android:id="@+id/searchEditText"
                 android:layout_width="189dp"
                 android:layout_height="38dp"
+                android:autofillHints=""
                 android:background="@drawable/edittext_rounded"
                 android:ems="10"
                 android:hint="Search"
+                android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:paddingStart="48dp"
                 android:textColor="#000000"
@@ -79,12 +84,13 @@
         app:layout_constraintStart_toStartOf="@id/bottomNavigationView"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigationViewStyle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/Secondary"
+        android:background="@color/_131921"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

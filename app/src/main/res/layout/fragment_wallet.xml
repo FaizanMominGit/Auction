@@ -83,10 +83,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="382dp"
+        android:layout_width="match_parent"
         android:layout_height="167dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginStart="16dp"
 
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="16dp"
         app:cardCornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -113,10 +115,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView10"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:layout_marginEnd="259dp"
                 android:text="Total balance" />
 
             <TextView
@@ -125,10 +125,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView11"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:layout_marginEnd="240dp"
                 android:text="Utilised amount" />
 
             <TextView
@@ -137,10 +135,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView12"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:layout_marginEnd="230dp"
                 android:text="Available balance" />
 
             <TextView

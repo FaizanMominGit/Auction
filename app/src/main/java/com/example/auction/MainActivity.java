@@ -1,21 +1,26 @@
 package com.example.auction;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,9 +48,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        EdgeToEdge.enable(this);
         // Set status bar and navigation bar color using ContextCompat
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = getWindow().getInsetsController();
+            if (insetsController != null) {
+                // Hide status bar and other system UI elements
+                insetsController.hide(WindowInsets.Type.statusBars());
+                insetsController.hide(WindowInsets.Type.navigationBars());
+            }
+        }
 
         // Initialize views
         home = findViewById(R.id.imageView);
@@ -106,14 +118,25 @@ public class MainActivity extends AppCompatActivity {
 
         // Search EditText listener for "Enter" key press
         searchEditText.setOnEditorActionListener((textView, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                String query = searchEditText.getText().toString();
-                navigateToSearchFragment(query);
-                return true;
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String query = searchEditText.getText().toString().trim();
+                if (!query.isEmpty()) {
+                    // Trigger the navigation to the search fragment
+                    navigateToSearchFragment(query);
+                }
+
+                // Optionally hide the keyboard after search
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null && getCurrentFocus() != null) {
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+
+                return true; // Indicating that the action has been handled
             }
-            return false;
+            return false; // Default action handling if the action ID is not a search
         });
+
+
     }
 
     // Helper method to load fragments
