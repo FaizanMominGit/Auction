@@ -52,7 +52,6 @@
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
-                android:marginStart="48dp"
                 android:textColor="#000000"
                 android:textColorHint="#7E7C7C" />
 
