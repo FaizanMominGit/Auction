@@ -14,4 +14,8 @@
     <string name="email_id">Email id</string>
     <string name="manage_account">Manage Account</string>
     <string name="user_name">User Name</string>
+    <string name="my_bids">My Bids</string>
+    <string name="auction">Auction</string>
+    <string name="sell">Sell</string>
+    <string name="logout">Logout</string>
 </resources>
