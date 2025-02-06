@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Add Radianite to Wallet"
+                android:text="@string/add_radianite_to_wallet"
                 android:textColor="@color/black"
                 android:backgroundTint="@color/Yellow"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="9dp"
-                android:hint="Enter amount"
+                android:hint="@string/enter_amount"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView18">
 
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
                 android:layout_marginTop="39dp"
-                android:text="Add Radianite"
+                android:text="@string/add_radianite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,7 +64,7 @@
                 android:id="@+id/textView43"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Local Currency Value"
+                android:text="@string/local_currency_value"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.585"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +111,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="20dp"
-                android:text="Wallet" />
+                android:text="@string/wallet" />
 
             <TextView
                 android:id="@+id/textView11"
@@ -121,7 +121,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:text="Total balance" />
+                android:text="@string/total_balance" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -131,7 +131,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:text="Utilised amount" />
+                android:text="@string/utilised_amount" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -141,7 +141,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="33dp"
                 android:layout_marginTop="14dp"
-                android:text="Available balance" />
+                android:text="@string/available_balance" />
 
             <TextView
                 android:id="@+id/Totalbalance"
@@ -151,7 +151,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="55dp"
                 android:layout_marginEnd="32dp"
-                android:text="0" />
+                android:text="@string/_0" />
 
             <TextView
                 android:id="@+id/Utilisedamount"
@@ -161,7 +161,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"
-                android:text="0" />
+                android:text="@string/_0" />
 
             <TextView
                 android:id="@+id/Availablebalance"
@@ -171,7 +171,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"
-                android:text="0" />
+                android:text="@string/_0" />
 
             <TextView
                 android:id="@+id/Bids"
@@ -181,7 +181,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="150dp"
                 android:layout_marginTop="87dp"
-                android:text="Bids"
+                android:text="@string/bids"
                 android:textColor="#75000000" />
 
         </RelativeLayout>
@@ -193,7 +193,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Country"
+        android:text="@string/country"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.104"
         app:layout_constraintStart_toStartOf="parent"

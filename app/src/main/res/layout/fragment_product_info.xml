@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="40dp"
-                android:text="Product Name"
+                android:text="@string/product_name"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"
-                android:text="$Heighest bid"
+                android:text="@string/heighest_bid"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productName" />
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:backgroundTint="@color/Yellow"
-                android:text="Bid Now"
+                android:text="@string/bid_now"
                 android:textColor="#0B0909"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="-16dp"
                 android:layout_marginTop="6dp"
-                android:text="initial price"
+                android:text="@string/initial_price"
                 android:textColor="#85000000"
                 app:layout_constraintStart_toEndOf="@+id/productHeighestPrice"
                 app:layout_constraintTop_toBottomOf="@+id/productHeighestPrice" />
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Detailed discryption"
+                android:text="@string/detailed_discryption"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/BidButton" />
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="48dp"
-                android:text="Start Date"
+                android:text="@string/start_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productName" />
 
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
-                android:text="End Date"
+                android:text="@string/end_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/start_date" />
 
@@ -118,7 +118,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="48dp"
                 android:foregroundTint="#000000"
-                android:text="Type"
+                android:text="@string/type"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/viewPager2" />
 
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Delete"
+                android:text="@string/delete"
                 android:visibility="visible"
                 android:backgroundTint="@color/Red"
                 app:layout_constraintBottom_toBottomOf="parent"
