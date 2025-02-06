@@ -68,7 +68,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="105dp"
                     android:layout_marginTop="21dp"
-                    android:text="User Name" />
+                    android:text="@string/user_name" />
 
                 <TextView
                     android:id="@+id/Email_id"
@@ -78,7 +78,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="105dp"
                     android:layout_marginTop="57dp"
-                    android:text="Email id" />
+                    android:text="@string/email_id" />
 
                 <TextView
                     android:id="@+id/Manage_Account"
@@ -87,7 +87,7 @@
                     android:layout_below="@+id/Email_id"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="45dp"
-                    android:text="Manage Account"
+                    android:text="@string/manage_account"
                     android:textSize="20sp" />
 
                 <TextView
@@ -107,7 +107,7 @@
                     android:layout_below="@+id/textView30"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="45dp"
-                    android:text="About"
+                    android:text="@string/about"
                     android:textSize="20sp" />
 
                 <TextView
@@ -147,6 +147,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="23dp"
             android:layout_marginTop="23dp"
+            android:background="@drawable/shadow_background"
+            android:elevation="9dp"
             android:padding="10dp"
             app:srcCompat="@drawable/baseline_close_24" />
     </RelativeLayout>
