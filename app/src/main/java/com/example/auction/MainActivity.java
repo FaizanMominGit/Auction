@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,15 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EdgeToEdge.enable(this);
-        // Set status bar and navigation bar color using ContextCompat
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController insetsController = getWindow().getInsetsController();
-            if (insetsController != null) {
-                // Hide status bar and other system UI elements
-                insetsController.hide(WindowInsets.Type.statusBars());
-                insetsController.hide(WindowInsets.Type.navigationBars());
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(getResources().getColor(R.color._131921)); // Set your color here
         }
 
         // Initialize views
@@ -176,7 +167,11 @@ public class MainActivity extends AppCompatActivity {
             TextView User_Name = dialog.findViewById(R.id.User_Name);
             TextView ManageAccount = dialog.findViewById(R.id.Manage_Account);
             TextView about = dialog.findViewById(R.id.About);
-
+            TextView my_bids = dialog.findViewById(R.id.my_bids);
+            my_bids.setOnClickListener(view -> {
+                startActivity(new Intent(getActivity(), MyBids.class));
+                dismiss();
+            });
             about.setOnClickListener(view -> {
                 loadFragment(new AboutFragment());
                 dismiss();

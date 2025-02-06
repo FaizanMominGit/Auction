@@ -32,20 +32,24 @@
                 android:backgroundTint="@color/Yellow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/amountTextInputLayout" />
 
-            <EditText
-                android:id="@+id/editTextNumber"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/amountTextInputLayout"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="20dp"
-                android:ems="10"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="9dp"
                 android:hint="Enter amount"
-                android:inputType="number"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView18">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/textView18"
                 android:layout_width="wrap_content"
@@ -64,16 +68,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.585"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/amountTextInputLayout" />
 
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="48dp"
                 android:layout_height="53dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/radianite"
-                app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
+                app:layout_constraintEnd_toStartOf="@+id/amountTextInputLayout"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView18" />
@@ -147,7 +151,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="55dp"
                 android:layout_marginEnd="32dp"
-                android:text="TextView" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/Utilisedamount"
@@ -157,7 +161,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"
-                android:text="TextView" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/Availablebalance"
@@ -167,7 +171,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="32dp"
-                android:text="TextView" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/Bids"

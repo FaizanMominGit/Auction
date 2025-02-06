@@ -97,6 +97,11 @@ public class AuctionDetailsFragment extends Fragment {
                 }
             });
         }
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        if(currentUserId != null && currentUserId.equals("vCQTuiiTgagqGjxX8xlwKIcqMVH2") ){
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+        deleteButton.setOnClickListener(v -> confirmDeleteAuction());
 
         bidButton.setOnClickListener(v -> fetchAvailableBalance(new AvailableBalanceCallback() {
             @Override
@@ -118,6 +123,28 @@ public class AuctionDetailsFragment extends Fragment {
     interface AuctionDetailsCallback {
         void onAuctionDetailsFetched(Auction auction);
         void onAuctionDetailsFetchError(Exception e);
+    }
+    private void confirmDeleteAuction() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete Auction")
+                .setMessage("Are you sure you want to delete this auction?")
+                .setPositiveButton("Delete", (dialog, which) -> deleteAuction())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteAuction() {
+        if (auctionItemId != null) {
+            db.collection("auctionItems").document(auctionItemId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Auction deleted successfully", Toast.LENGTH_SHORT).show();
+                        requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to delete auction: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void fetchAuctionDetails(String auctionItemId, AuctionDetailsCallback callback) {
