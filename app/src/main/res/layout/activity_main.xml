@@ -88,7 +88,7 @@
         android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigationViewStyle"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:background="@color/_131921"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

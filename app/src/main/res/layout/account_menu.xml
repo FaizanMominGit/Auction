@@ -49,15 +49,26 @@
                 android:layout_height="match_parent"
                 >
 
-                <ImageView
-                    android:id="@+id/imageView10"
-                    android:layout_width="57dp"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_card"
+                    android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="26dp"
                     android:layout_marginTop="21dp"
-                    android:src="@drawable/account" />
+                    android:src="@drawable/account"
+                    app:cardCornerRadius="40dp">
+
+                    <ImageView
+                        android:id="@+id/menuProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/account"
+                        android:visibility="visible" />
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/User_Name"
@@ -133,6 +144,17 @@
                     android:text="@string/logout"
                     android:textColor="#FF0000"
                     android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/AdminManageUsers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/my_bids"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="45dp"
+                    android:text="Admin Manage Users"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 

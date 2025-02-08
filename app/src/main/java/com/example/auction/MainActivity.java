@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.media3.common.util.UnstableApi;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,15 +58,9 @@ public class MainActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
 
         auth = FirebaseAuth.getInstance();
-
+        FirebaseUser user = auth.getCurrentUser();
         // Check if user is logged in and update UI accordingly
-        if (auth.getCurrentUser() == null) {
-            imageView.setVisibility(View.GONE);
-            loginButton.setVisibility(View.VISIBLE);
-        } else {
-            imageView.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.GONE);
-        }
+        updateLoginUI(user);
 
         // Login button listener
         loginButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
@@ -126,8 +121,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return false; // Default action handling if the action ID is not a search
         });
-
-
     }
 
     // Helper method to load fragments
@@ -146,7 +139,18 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(searchListFragment);
     }
 
-    // Dialog fragment for account menu
+    // Helper method to update the login UI
+    private void updateLoginUI(FirebaseUser user) {
+        if (user == null || !user.isEmailVerified()) {
+            imageView.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        } else {
+            imageView.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+        }
+    }
+
+    // AccountMenuDialogFragment (Inner Class)
     public static class AccountMenuDialogFragment extends DialogFragment {
 
         @NonNull
@@ -159,33 +163,54 @@ public class MainActivity extends AppCompatActivity {
 
             TextView sell = dialog.findViewById(R.id.textView30);
             TextView logoutButton = dialog.findViewById(R.id.textView37);
-
             ImageView closeButton = dialog.findViewById(R.id.imageView9);
-            closeButton.setOnClickListener(view -> dismiss());
-
             TextView Email_id = dialog.findViewById(R.id.Email_id);
             TextView User_Name = dialog.findViewById(R.id.User_Name);
             TextView ManageAccount = dialog.findViewById(R.id.Manage_Account);
             TextView about = dialog.findViewById(R.id.About);
             TextView my_bids = dialog.findViewById(R.id.my_bids);
+            TextView adminManageUsers = dialog.findViewById(R.id.AdminManageUsers);
+            ImageView profile = dialog.findViewById(R.id.menuProfile);
+
+            // Load the current profile picture if available
+            loadProfilePicture(profile);
+
+            // Close button listener
+            closeButton.setOnClickListener(view -> dismiss());
+
+            // Admin Manage Users listener
+            adminManageUsers.setOnClickListener(view -> {
+                startActivity(new Intent(getActivity(), AdminManageUsers.class));
+                dismiss();
+            });
+
+            // My Bids listener
             my_bids.setOnClickListener(view -> {
                 startActivity(new Intent(getActivity(), MyBids.class));
                 dismiss();
             });
+
+            // About listener
             about.setOnClickListener(view -> {
-                loadFragment(new AboutFragment());
+                // Instead of trying to load a fragment, just dismiss the dialog
                 dismiss();
             });
 
-            // Dismiss dialog when clicking outside
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-
+            // Manage Account listener
             ManageAccount.setOnClickListener(view -> {
                 loadFragment(new AccountFragment());
                 dismiss();
             });
 
+            // Logout listener
+            logoutButton.setOnClickListener(view -> {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                if (getActivity() != null) getActivity().finish();
+                dismiss();
+            });
+
+            // Fetch user data and update UI
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 String email = user.getEmail();
@@ -200,17 +225,25 @@ public class MainActivity extends AppCompatActivity {
                                 Email_id.setText(email);
                                 User_Name.setText(name);
                             } else {
-                                Log.d("AccountMenuDialog", "User document not found");
-                            }
+                                Log.d("AccountMenuDialog", "User document not found");}
                         })
                         .addOnFailureListener(e -> Log.e("AccountMenuDialog", "Error getting user document", e));
+
+                // Check if the user is an admin
+                if ("vCQTuiiTgagqGjxX8xlwKIcqMVH2".equals(uid)) {
+                    adminManageUsers.setVisibility(View.VISIBLE);
+                } else {
+                    adminManageUsers.setVisibility(View.GONE);
+                }
             } else {
                 Log.d("AccountMenuDialog", "User not logged in");
             }
 
+            // Sell listener
             sell.setOnClickListener(view -> {
-                if (user != null) {
-                    String uid = user.getUid();
+                FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+                if (user1 != null) {
+                    String uid = user1.getUid();
 
                     FirebaseFirestore.getInstance().collection("users")
                             .document(uid)
@@ -236,13 +269,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            logoutButton.setOnClickListener(view -> {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                if (getActivity() != null) getActivity().finish();
-                dismiss();
-            });
-
+            // Dismiss dialog when clicking outside
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             return dialog;
         }
@@ -253,6 +282,20 @@ public class MainActivity extends AppCompatActivity {
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+
+        private void loadProfilePicture(ImageView profileImageView) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null && user.getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(user.getPhotoUrl())
+                        .placeholder(R.drawable.account) // Placeholder image
+                        .error(R.drawable.account) // Error image
+                        .into(profileImageView);
+            } else {
+                // Load default image if no profile picture is set
+                profileImageView.setImageResource(R.drawable.account);
+            }
         }
     }
 }

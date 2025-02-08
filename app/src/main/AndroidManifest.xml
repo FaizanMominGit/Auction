@@ -28,6 +28,9 @@
         android:theme="@style/Theme.Auction"
         tools:targetApi="31">
         <activity
+            android:name=".AdminManageUsers"
+            android:exported="false" />
+        <activity
             android:name=".MyBids"
             android:exported="false" />
         <activity
