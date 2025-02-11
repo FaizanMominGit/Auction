@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -89,10 +90,9 @@ public class SignupActivity extends AppCompatActivity {
             int age = Integer.parseInt(ageString);
             return age >= 18;
         } catch (NumberFormatException e) {
-            return false; // Handle cases where age is not a valid integer
+            return false;
         }
     }
-
 
     private boolean isFieldEmpty(EditText editText) {
         return editText.getText().toString().trim().isEmpty();
@@ -105,9 +105,7 @@ public class SignupActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             String uid = user.getUid();
-
                             sendVerificationEmail(user);
-
                             saveUserDetailsToFirestore(user, name, age, phone, uid);
                         } else {
                             Toast.makeText(SignupActivity.this, "User creation failed.", Toast.LENGTH_SHORT).show();
@@ -132,6 +130,15 @@ public class SignupActivity extends AppCompatActivity {
         db.collection("users").document(uid)
                 .set(userDetails)
                 .addOnSuccessListener(aVoid -> {
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            String fcmToken = task.getResult();
+                            db.collection("users").document(uid)
+                                    .update("fcmToken", fcmToken)
+                                    .addOnSuccessListener(unused -> Log.d("SignupActivity", "FCM token saved."))
+                                    .addOnFailureListener(e -> Log.e("SignupActivity", "Failed to save FCM token", e));
+                        }
+                    });
                     Toast.makeText(SignupActivity.this, "User details saved.", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
@@ -148,14 +155,12 @@ public class SignupActivity extends AppCompatActivity {
             user.sendEmailVerification()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Verification email sent. Please verify and login.",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignupActivity.this, "Verification email sent. Please verify and login.", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(SignupActivity.this, "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
                         }
                     });
         }

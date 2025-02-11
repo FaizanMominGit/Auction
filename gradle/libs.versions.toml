@@ -26,6 +26,8 @@ firebaseStorage = "21.0.1"
 media3Common = "1.5.1"
 playServicesMaps = "19.0.0"
 navigationFragment = "2.8.5"
+firebaseMessaging = "24.1.0"
+volley = "1.2.1"
 
 [libraries]
 activity-v192 = { module = "androidx.activity:activity", version.ref = "activityVersion" }
@@ -53,6 +55,8 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

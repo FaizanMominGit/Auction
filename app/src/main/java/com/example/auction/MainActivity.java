@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,10 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(getResources().getColor(R.color._131921)); // Set your color here
-        }
+
 
         // Initialize views
         home = findViewById(R.id.imageView);
@@ -193,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             // About listener
             about.setOnClickListener(view -> {
                 // Instead of trying to load a fragment, just dismiss the dialog
+                startActivity((new Intent(getActivity(), AboutFragment.class)));
                 dismiss();
             });
 
@@ -230,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> Log.e("AccountMenuDialog", "Error getting user document", e));
 
                 // Check if the user is an admin
-                if ("vCQTuiiTgagqGjxX8xlwKIcqMVH2".equals(uid)) {
+                if ("yBwGsrIfeIfY0FbssGsHtxzWxsG2".equals(uid)) {
                     adminManageUsers.setVisibility(View.VISIBLE);
                 } else {
                     adminManageUsers.setVisibility(View.GONE);

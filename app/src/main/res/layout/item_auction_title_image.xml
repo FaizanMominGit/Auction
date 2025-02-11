@@ -10,8 +10,9 @@
     android:clickable="true"
     android:focusable="true"
     android:padding="8dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="15dp"
-    app:cardElevation="7dp">
+    app:cardElevation="5dp">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -41,7 +42,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/textview"
-        android:textColor="@android:color/black"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

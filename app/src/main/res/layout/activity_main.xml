@@ -92,6 +92,9 @@
         android:background="@color/_131921"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

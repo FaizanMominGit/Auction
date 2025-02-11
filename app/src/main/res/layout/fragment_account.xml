@@ -88,7 +88,8 @@
                     android:layout_height="match_parent"
                     android:clickable="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/account"
+                    android:src="@drawable/baseline_account_circle_24"
+                    android:background="@drawable/account1"
                     android:visibility="visible" />
             </androidx.cardview.widget.CardView>
 

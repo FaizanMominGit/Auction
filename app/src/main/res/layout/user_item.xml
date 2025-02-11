@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="#3A4C62"
     android:padding="16dp">
 
     <androidx.cardview.widget.CardView
@@ -33,12 +34,14 @@ android:orientation="vertical">
     android:layout_height="wrap_content"
     android:text="User Name"
     android:textSize="16sp"
+    android:textColor="@color/white"
     android:textStyle="bold" />
 
 <TextView
     android:id="@+id/userEmailTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:textColor="@color/white"
     android:text="user@email.com" />
 </LinearLayout>
 

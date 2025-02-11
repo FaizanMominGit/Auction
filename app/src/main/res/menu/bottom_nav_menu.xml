@@ -3,7 +3,8 @@
     <item
         android:id="@+id/item1"
         android:icon="@drawable/house"
-        android:title="Home" />
+        android:title="Home"
+        />
     <item
         android:id="@+id/item2"
         android:icon="@drawable/bid"

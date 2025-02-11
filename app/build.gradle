@@ -15,6 +15,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+        }
     }
 
     buildTypes {
@@ -36,7 +39,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
 
     // Firebase BOM for managing Firebase dependencies
-    implementation platform('com.google.firebase:firebase-bom:33.8.0')
+    implementation platform('com.google.firebase:firebase-bom:33.9.0')
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.53'
 
@@ -53,6 +56,8 @@ dependencies {
     implementation libs.play.services.maps
     implementation 'androidx.activity:activity:1.10.0'
     implementation libs.navigation.fragment
+    implementation libs.firebase.messaging
+    implementation libs.volley
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
     // AndroidX dependencies
@@ -62,6 +67,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.viewpager2:viewpager2:1.1.0'
+
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.18.0'
 
     // Room
     implementation 'androidx.room:room-runtime:2.6.1'

@@ -98,7 +98,7 @@ public class AuctionDetailsFragment extends Fragment {
             });
         }
         Button deleteButton = view.findViewById(R.id.deleteButton);
-        if(currentUserId != null && currentUserId.equals("vCQTuiiTgagqGjxX8xlwKIcqMVH2") ){
+        if(currentUserId != null && currentUserId.equals("yBwGsrIfeIfY0FbssGsHtxzWxsG2") ){
             deleteButton.setVisibility(View.VISIBLE);
         }
         deleteButton.setOnClickListener(v -> confirmDeleteAuction());
