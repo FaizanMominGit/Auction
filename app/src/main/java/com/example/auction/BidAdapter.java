@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,6 +71,7 @@ public class BidAdapter extends RecyclerView.Adapter<BidAdapter.BidViewHolder> {
         public TextView highestBid;
         public TextView yourHighestBid;
         public String auctionItemId;
+        public View overlay;
 
         public BidViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +82,7 @@ public class BidAdapter extends RecyclerView.Adapter<BidAdapter.BidViewHolder> {
             endDate = itemView.findViewById(R.id.endDate);
             highestBid = itemView.findViewById(R.id.highestBid);
             yourHighestBid = itemView.findViewById(R.id.yourHighestBid);
+            overlay = itemView.findViewById(R.id.overlay);
         }
     }
 
@@ -107,6 +110,7 @@ public class BidAdapter extends RecyclerView.Adapter<BidAdapter.BidViewHolder> {
         holder.endDate.setText(currentItem.getEndDate());
         holder.highestBid.setText("$" + currentItem.getHighestBid());
 
+
         // Find the user's highest bid for this auction
         double userHighestBid = 0.0;
         if (currentItem.getBidders() != null && currentUserId != null) {
@@ -119,7 +123,13 @@ public class BidAdapter extends RecyclerView.Adapter<BidAdapter.BidViewHolder> {
                 }
             }
         }
-
+        if (currentItem.getStatus().equals("closed")) {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Red));
+        } else if (currentItem.getStatus().equals("live")) {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Green));
+        } else {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Yellow));
+        }
         // Show or hide "Your Highest Bid" section based on user's bid
         if (userHighestBid > 0.0) {
             holder.yourHighestBid.setVisibility(View.VISIBLE);

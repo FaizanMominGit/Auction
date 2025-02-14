@@ -103,6 +103,9 @@ public class SellFragment extends Fragment {
         fullAddress = view.findViewById(R.id.Fulladdress);
         endDateDisplay.setEnabled(false); // Disable end date EditText initially
         radioGroup = view.findViewById(R.id.radioGroup);
+
+        // Set the initial hint for startDateDisplay and startTimeButton
+
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);
         int currentMinute = c.get(Calendar.MINUTE);
@@ -136,8 +139,6 @@ public class SellFragment extends Fragment {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            // Initialize datePickerDialog here
             DatePickerDialog startDateDialog = new DatePickerDialog(getActivity(),
                     (view12, year1, monthOfYear, dayOfMonth) -> {
                         String selectedDateString = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year1);
@@ -193,15 +194,30 @@ public class SellFragment extends Fragment {
 
         }, currentHour, currentMinute, false).show());
 
-
         // Submit button click listener
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(v -> onSubmitButtonClicked());
+
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.liveRadioButton) {
                 status = "live";
+                // Disable start date and time
+                startDateDisplay.setEnabled(false);
+                startTimeButton.setEnabled(false);
+                // Optionally clear the fields
+                startDateDisplay.setText("");
+                startTimeButton.setText("");
+                endDateDisplay.setEnabled(true);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                Date now = new Date();
+                startDateDisplay.setText(dateFormat.format(now));  // Use setText()
+                startTimeButton.setText(timeFormat.format(now));
             } else if (checkedId == R.id.scheduledRadioButton) {
                 status = "scheduled";
+                // Enable start date and time
+                startDateDisplay.setEnabled(true);
+                startTimeButton.setEnabled(true);
             }
         });
 
@@ -307,7 +323,6 @@ public class SellFragment extends Fragment {
             uploadTasks.add(uploadTask);
         }
         Task<Void> allTasks = Tasks.whenAll(uploadTasks.toArray(new Task[0]));
-
         allTasks.addOnSuccessListener(aVoid -> {
             // All upload tasks completed successfully
             for (Task<UploadTask.TaskSnapshot> task : uploadTasks) {
@@ -335,133 +350,97 @@ public class SellFragment extends Fragment {
     }
 
     private void saveAuctionItemToFirestore() {
-        // Use a fixed document ID for the auction item
         String auctionItemId = UUID.randomUUID().toString(); // Generate a unique ID for the auction item
         String userId = auth.getCurrentUser().getUid();
         Map<String, Object> data = new HashMap<>();
-        data.put("auctionItemId", auctionItemId); // Add the auction item ID to the data
+
+        data.put("auctionItemId", auctionItemId);
         data.put("title", itemTitle.getText().toString());
         data.put("description", itemDescription.getText().toString());
-        data.put("startDate", startDateDisplay.getText().toString());
-        data.put("startTime", startTimeButton.getText().toString());
-        data.put("endDate", endDateDisplay.getText().toString());
-        data.put("endTime", endTimeButton.getText().toString());
-        data.put("startingPrice", Double.parseDouble(startingPrice.getText().toString()));
+        data.put("startingPrice", Double.parseDouble(startingPrice.getText().toString())); // Ensure numeric value
         data.put("category", categorySpinner4.getSelectedItem().toString());
         data.put("address", fullAddress.getText().toString());
         data.put("userId", userId);
-        data.put("imageUrls", downloadUrls);
-        // Add the status to the data
         data.put("status", status);
+        data.put("imageUrls", downloadUrls);
 
-        db.collection("auctionItems").document(auctionItemId) // Use the auction item ID as the document ID
+        // Handle start date and time based on status
+        if (status.equals("live")) {
+            Date now = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            data.put("startDate", dateFormat.format(now));
+            data.put("startTime", timeFormat.format(now));
+        } else {
+            data.put("startDate", startDateDisplay.getText().toString());
+            data.put("startTime", startTimeButton.getText().toString());
+        }
+
+        data.put("endDate", endDateDisplay.getText().toString());
+        data.put("endTime", endTimeButton.getText().toString());
+
+        // Initialize bidding-related fields
+        data.put("highestBid",Double.parseDouble(startingPrice.getText().toString()) );
+
+        // Save to Firestore
+        db.collection("auctionItems").document(auctionItemId)
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Item added successfully!", Toast.LENGTH_SHORT).show();
-                    // Clear input fields
+                    Toast.makeText(getContext(), "Auction item saved", Toast.LENGTH_SHORT).show();
+                    // Clear the input fields after successful submission
                     itemTitle.setText("");
                     itemDescription.setText("");
+                    startingPrice.setText("");
                     startDateDisplay.setText("");
                     startTimeButton.setText("");
                     endDateDisplay.setText("");
                     endTimeButton.setText("");
-                    startingPrice.setText("");
                     fullAddress.setText("");
                     selectedImageUris.clear();
                     selectedImagePaths.clear();
                     downloadUrls.clear();
-                    selectedImagesRecyclerView.getAdapter().notifyDataSetChanged();
-
+                    categorySpinner4.setSelection(0);
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to add item.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error saving auction item: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
+
     private void onSubmitButtonClicked() {
-        // Get values from input fields
-        String title = itemTitle.getText().toString();
-        String description = itemDescription.getText().toString();
-        String startDateString = startDateDisplay.getText().toString();
-        String startTimeString = startTimeButton.getText().toString();
-        String endDateString = endDateDisplay.getText().toString();
-        String endTimeString = endTimeButton.getText().toString();
-        String startingPriceStr = startingPrice.getText().toString();
-        String category = categorySpinner4.getSelectedItem().toString();
-        String address = fullAddress.getText().toString();
-
         // Validate input fields
-        if (title.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter item title", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (category.isEmpty()) {
-            Toast.makeText(getContext(), "Please select category", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (description.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter item description", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (startDateString.isEmpty()) {
-            Toast.makeText(getContext(), "Please select start date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (startTimeString.isEmpty()) {
-            Toast.makeText(getContext(), "Please select start time", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (endDateString.isEmpty()) {
-            Toast.makeText(getContext(), "Please select end date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (endTimeString.isEmpty()) {
-            Toast.makeText(getContext(), "Please select end time", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (startingPriceStr.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter starting price", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (selectedImageUris.isEmpty()) {
-            Toast.makeText(getContext(), "Please select at least one image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (address.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter full address", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (status == null || status.isEmpty()) {
-            Toast.makeText(getContext(), "Please select auction status", Toast.LENGTH_SHORT).show();
+        if (itemTitle.getText().toString().isEmpty() ||
+                itemDescription.getText().toString().isEmpty() ||
+                startingPrice.getText().toString().isEmpty() ||
+                fullAddress.getText().toString().isEmpty() ||
+                selectedImageUris.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill in all fields and select at least one image", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Parse start and end date/time
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-        Date startDate = null;
-        Date startTime = null;
-        Date endDate = null;
-        Date endTime = null;
-        try {
-            startDate = dateFormat.parse(startDateString);
-            startTime = timeFormat.parse(startTimeString);
-            endDate = dateFormat.parse(endDateString);
-            endTime = timeFormat.parse(endTimeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Invalid date/time format", Toast.LENGTH_SHORT).show();
+        if (status == null) {
+            Toast.makeText(getContext(), "Please select live or scheduled", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (status.equals("scheduled")) {
+            if (startDateDisplay.getText().toString().isEmpty() ||
+                    startTimeButton.getText().toString().isEmpty() ||
+                    endDateDisplay.getText().toString().isEmpty() ||
+                    endTimeButton.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "Please select start and end dates and times", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         // Upload images to Firebase Storage
-        uploadImagesToStorage(selectedImagePaths, UUID.randomUUID().toString());
+        uploadImagesToStorage(selectedImagePaths, UUID.randomUUID().toString()); // Pass the item ID
     }
 
-    private class SelectedImagesAdapter extends RecyclerView.Adapter<SelectedImagesAdapter.ViewHolder> {
+    static class SelectedImagesAdapter extends RecyclerView.Adapter<SelectedImagesAdapter.ViewHolder> {
 
-        private List<Uri> imageUris;
         private Context context;
+        private List<Uri> imageUris;
 
         public SelectedImagesAdapter(Context context, List<Uri> imageUris) {
             this.context = context;
@@ -486,7 +465,7 @@ public class SellFragment extends Fragment {
             return imageUris.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             ImageView imageView;
 
             public ViewHolder(@NonNull View itemView) {

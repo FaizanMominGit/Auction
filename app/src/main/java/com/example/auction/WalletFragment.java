@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -261,23 +263,25 @@ public class WalletFragment extends Fragment {
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     Double currentTotalBalance = documentSnapshot.getDouble("totalBalance");
-                    Double currentUtilisedBalance = documentSnapshot.getDouble("utilisedBalance");
-
                     if (currentTotalBalance == null) currentTotalBalance = 0.0;
-                    if (currentUtilisedBalance == null) currentUtilisedBalance = 0.0;
 
                     double newTotalBalance = currentTotalBalance + amount;
-
                     Map<String, Object> walletData = new HashMap<>();
                     walletData.put("totalBalance", newTotalBalance);
-
-                    // No need to store `availableBalance` in Firestore, always compute it dynamically
 
                     userRef.update(walletData)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(getContext(), "Amount added to wallet", Toast.LENGTH_SHORT).show();
                                 fetchWalletData();  // Refresh UI
                                 amountEditText.setText("");
+
+                                // Play success animation
+                                LottieAnimationView successAnim = getView().findViewById(R.id.successAnimation);
+                                successAnim.setVisibility(View.VISIBLE);
+                                successAnim.playAnimation();
+
+                                // Hide animation after 2 seconds
+                                new Handler().postDelayed(() -> successAnim.setVisibility(View.GONE), 2000);
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getContext(), "Failed to add amount", Toast.LENGTH_SHORT).show();
@@ -291,6 +295,7 @@ public class WalletFragment extends Fragment {
             Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
     private void fetchWalletData() {

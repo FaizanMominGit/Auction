@@ -1,12 +1,19 @@
 package com.example.auction;
 
+import android.animation.Animator;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,8 +21,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,8 +34,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class AuctionDetailsFragment extends Fragment {
 
@@ -38,9 +53,16 @@ public class AuctionDetailsFragment extends Fragment {
     private String currentUserId;
     private String auctionStatus;
     private double availableBalance;
+    private Dialog successDialog;
+    private TextView daysTextView;
+    private TextView hoursTextView;
+    private TextView minutesTextView;
+    private TextView secondsTextView;
+    private String endDate, endTime;
 
     interface AvailableBalanceCallback {
         void onAvailableBalanceFetched(double balance);
+
         void onFetchError(Exception e);
     }
 
@@ -58,6 +80,12 @@ public class AuctionDetailsFragment extends Fragment {
         TextView endDateTextView = view.findViewById(R.id.end_date);
         Button bidButton = view.findViewById(R.id.BidButton);
         ViewPager2 viewPager2 = view.findViewById(R.id.viewPager2);
+
+        daysTextView = view.findViewById(R.id.daysTextView);
+        hoursTextView = view.findViewById(R.id.hoursTextView);
+        minutesTextView = view.findViewById(R.id.minutesTextView);
+        secondsTextView = view.findViewById(R.id.secondsTextView);
+
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -81,6 +109,9 @@ public class AuctionDetailsFragment extends Fragment {
                     startDateTextView.setText(auction.getStartDate());
                     endDateTextView.setText(auction.getEndDate());
                     auctionStatus = auction.getStatus();
+                    endTime = auction.getEndTime();
+                    endDate = auction.getEndDate();
+                    startCountdown(endDate, endTime);
 
                     ImageSliderAdapter adapter = new ImageSliderAdapter(requireContext(), auction.getImageUrls());
                     viewPager2.setAdapter(adapter);
@@ -90,6 +121,52 @@ public class AuctionDetailsFragment extends Fragment {
                         bidButton.setText("Auction is not live");
                     }
                 }
+                private void startCountdown(String endDateString, String endTimeString) {
+                    if (endDateString == null || endTimeString == null) return;
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault());
+                    Date endDate;
+
+                    try {
+                        endDate = dateFormat.parse(endDateString + " " + endTimeString);
+                    } catch (ParseException e) {
+                        Log.e("AuctionDetailsFragment", "Error parsing end date and time", e);
+                        return;
+                    }
+
+                    Date currentTime = Calendar.getInstance().getTime();
+                    long timeDiff = endDate.getTime() - currentTime.getTime();
+
+                    if (timeDiff <= 0) {
+                        updateCountdownUI(0, 0, 0, 0);
+                        return;
+                    }
+
+                    new CountDownTimer(timeDiff, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            long days = TimeUnit.MILLISECONDS.toDays(millisUntilFinished);
+                            long hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished) % 24;
+                            long minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60;
+                            long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60;
+
+                            updateCountdownUI(days, hours, minutes, seconds);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            updateCountdownUI(0, 0, 0, 0);
+                        }
+                    }.start();
+                }
+
+                private void updateCountdownUI(long days, long hours, long minutes, long seconds) {
+                    daysTextView.setText(String.format(Locale.getDefault(), "%02d", days));
+                    hoursTextView.setText(String.format(Locale.getDefault(), "%02d", hours));
+                    minutesTextView.setText(String.format(Locale.getDefault(), "%02d", minutes));
+                    secondsTextView.setText(String.format(Locale.getDefault(), "%02d", seconds));
+                }
+
 
                 @Override
                 public void onAuctionDetailsFetchError(Exception e) {
@@ -98,7 +175,7 @@ public class AuctionDetailsFragment extends Fragment {
             });
         }
         Button deleteButton = view.findViewById(R.id.deleteButton);
-        if(currentUserId != null && currentUserId.equals("yBwGsrIfeIfY0FbssGsHtxzWxsG2") ){
+        if (currentUserId != null && currentUserId.equals("yBwGsrIfeIfY0FbssGsHtxzWxsG2")) {
             deleteButton.setVisibility(View.VISIBLE);
         }
         deleteButton.setOnClickListener(v -> confirmDeleteAuction());
@@ -116,14 +193,15 @@ public class AuctionDetailsFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to fetch available balance", Toast.LENGTH_SHORT).show();
             }
         }));
-
         return view; // Ensure this line is included
     }
 
     interface AuctionDetailsCallback {
         void onAuctionDetailsFetched(Auction auction);
+
         void onAuctionDetailsFetchError(Exception e);
     }
+
     private void confirmDeleteAuction() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Delete Auction")
@@ -215,8 +293,7 @@ public class AuctionDetailsFragment extends Fragment {
                 Auction auction = auctionSnapshot.toObject(Auction.class);
                 Double userTotalBalance = userSnapshot.getDouble("totalBalance");
                 Double userUtilisedBalance = userSnapshot.getDouble("utilisedBalance");
-
-                // Check if auction is null
+// Check if auction is null
                 if (auction == null) {
                     throw new RuntimeException("Auction data is null");
                 }
@@ -235,7 +312,6 @@ public class AuctionDetailsFragment extends Fragment {
 
                 // If userTotalBalance is null, set to 0.0
                 userTotalBalance = (userTotalBalance != null) ? userTotalBalance : 0.0;
-
                 // Initialize utilisedBalance if it's null and set it to 0.0
                 userUtilisedBalance = (userUtilisedBalance != null) ? userUtilisedBalance : 0.0;
 
@@ -282,7 +358,15 @@ public class AuctionDetailsFragment extends Fragment {
             }
         }).addOnSuccessListener(aVoid -> {
             Toast.makeText(getContext(), "Bid placed successfully", Toast.LENGTH_SHORT).show();
-            updateHighestBidDisplay(); // Optional: Update UI with the new highest bid
+            showSuccessAnimation();
+            updateHighestBidDisplay();
+            Fragment bidsFragment = new BidsFragment();
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, bidsFragment); // Make sure to use the correct container ID
+            transaction.addToBackStack(null); // Allows back navigation
+            transaction.commit();
+
+            // Optional: Update UI with the new highest bid
         }).addOnFailureListener(e -> {
             Toast.makeText(getContext(), "Failed to place bid: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("AuctionDetailsFragment", "Failed to place bid", e);
@@ -308,7 +392,6 @@ public class AuctionDetailsFragment extends Fragment {
     }
 
 
-
     private void fetchAvailableBalance(AvailableBalanceCallback callback) {
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
@@ -320,20 +403,52 @@ public class AuctionDetailsFragment extends Fragment {
                     Double totalBalance = documentSnapshot.getDouble("totalBalance");
                     Double utilisedBalance = documentSnapshot.getDouble("utilisedBalance");
 
-                    if (totalBalance == null) totalBalance = 0.0;
-                    if (utilisedBalance == null) utilisedBalance = 0.0;
+                    // Check if totalBalance and utilisedBalance are null, set to 0.0 if they are
+                    totalBalance = (totalBalance != null) ? totalBalance : 0.0;
+                    utilisedBalance = (utilisedBalance != null) ? utilisedBalance : 0.0;
 
-                    // Compute available balance dynamically instead of fetching from Firestore
                     double availableBalance = totalBalance - utilisedBalance;
-
                     callback.onAvailableBalanceFetched(availableBalance);
                 } else {
                     callback.onFetchError(new Exception("User document not found"));
                 }
             }).addOnFailureListener(callback::onFetchError);
         } else {
-            callback.onFetchError(new Exception("User not logged in"));
+            callback.onFetchError(new Exception("No user logged in"));
         }
     }
 
+    private void showSuccessAnimation() {
+        successDialog = new Dialog(getContext());
+        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        successDialog.setContentView(R.layout.dialog_success_animation);
+        successDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        successDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        successDialog.setCancelable(false);
+
+        LottieAnimationView animationView = successDialog.findViewById(R.id.successAnimationView);
+        animationView.playAnimation();
+
+        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                successDialog.dismiss();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+
+        successDialog.show();
+    }
 }
+

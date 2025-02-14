@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -57,7 +58,13 @@ public class MyBidsAdapter extends RecyclerView.Adapter<MyBidsAdapter.MyBidViewH
         } else {
             holder.highestBid.setText(String.valueOf(auction.getHighestBid()));
         }
-
+        if (auction.getStatus().equals("closed")) {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Red));
+        } else if (auction.getStatus().equals("live")) {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Green));
+        } else {
+            holder.overlay.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.Yellow));
+        }
         // Hide "Your Highest Bid" related views since it's not relevant here.
         holder.yourHighestBidLabel.setText("Startig bid");
         holder.yourHighestBid.setText(String.valueOf(auction.getStartingPrice()));
@@ -78,6 +85,7 @@ public class MyBidsAdapter extends RecyclerView.Adapter<MyBidsAdapter.MyBidViewH
     public static class MyBidViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
         TextView itemTitle, endTime, endDate, highestBid, yourHighestBid, yourHighestBidLabel;
+        View overlay;
 
         public MyBidViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +96,7 @@ public class MyBidsAdapter extends RecyclerView.Adapter<MyBidsAdapter.MyBidViewH
             highestBid = itemView.findViewById(R.id.highestBid);
             yourHighestBid = itemView.findViewById(R.id.yourHighestBid);
             yourHighestBidLabel = itemView.findViewById(R.id.yourHighestBidLabel);
+            overlay = itemView.findViewById(R.id.overlay);
         }
     }
 }

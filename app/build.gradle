@@ -60,6 +60,7 @@ dependencies {
     implementation libs.volley
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
+    implementation 'com.airbnb.android:lottie:6.1.0'
     // AndroidX dependencies
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
