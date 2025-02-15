@@ -9,4 +9,6 @@
     <color name="Red">#FF0000</color>
     <color name="Text">#006064</color>
     <color name="Green">#8BC34A</color>
+    <color name="gray">#434343</color>
+
 </resources>

@@ -46,8 +46,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="match_parent">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profile_card"
@@ -64,9 +63,9 @@
                         android:id="@+id/menuProfile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@drawable/account1"
                         android:clickable="true"
                         android:scaleType="centerCrop"
-                        android:background="@drawable/account1"
                         android:visibility="visible" />
                 </androidx.cardview.widget.CardView>
 
@@ -94,7 +93,7 @@
                     android:id="@+id/Manage_Account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/Email_id"
+                    android:layout_below="@+id/my_bids"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="45dp"
                     android:text="@string/manage_account"
@@ -104,7 +103,8 @@
                     android:id="@+id/textView30"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/Manage_Account"
+                    android:layout_below="@+id/profile_card"
+                    android:layout_alignParentStart="false"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="45dp"
                     android:text="@string/sell"
@@ -149,12 +149,12 @@
                     android:id="@+id/AdminManageUsers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/my_bids"
+                    android:layout_below="@+id/Manage_Account"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="45dp"
                     android:text="Admin Manage Users"
                     android:textSize="20sp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
             </RelativeLayout>
 

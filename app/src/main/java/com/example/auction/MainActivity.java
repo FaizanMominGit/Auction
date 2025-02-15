@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             // About listener
             about.setOnClickListener(view -> {
                 // Instead of trying to load a fragment, just dismiss the dialog
-                startActivity((new Intent(getActivity(), AboutFragment.class)));
+                loadFragment(new AboutFragment());
                 dismiss();
             });
 

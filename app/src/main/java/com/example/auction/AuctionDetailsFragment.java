@@ -426,7 +426,7 @@ public class AuctionDetailsFragment extends Fragment {
         successDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         successDialog.setCancelable(false);
 
-        LottieAnimationView animationView = successDialog.findViewById(R.id.successAnimationView);
+        LottieAnimationView animationView = successDialog.findViewById(R.id.lottieAnimationView);
         animationView.playAnimation();
 
         animationView.addAnimatorListener(new Animator.AnimatorListener() {
