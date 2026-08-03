@@ -22,8 +22,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install firebase-admin pytz
 
-      - name: Create Service Account File
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > serviceAccountKey.json
-
       - name: Run the script
         run: python close_auctions.py
