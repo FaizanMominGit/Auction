@@ -1,5 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
+from google.cloud.firestore_v1.base_query import FieldFilter
 import pytz
 from datetime import datetime
 
@@ -11,13 +12,13 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 def close_expired_auctions():
-    """Closes expired auctions and updates user balances, only for live auctions."""
+    """Closes expired auctions and updates user balances, handles live and scheduled."""
     try:
         ist = datetime.now(pytz.timezone("Asia/Kolkata"))
         auction_items_ref = db.collection('auctionItems')
 
-        # Query for ONLY 'live' auctions
-        query = auction_items_ref.where('status', '==', 'live')
+        # Query for both 'live' and 'scheduled' auctions
+        query = auction_items_ref.where(filter=FieldFilter('status', 'in', ['live', 'scheduled']))
         snapshot = query.get()
 
         batch = db.batch()
