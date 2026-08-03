@@ -3,6 +3,7 @@ name: Close Expired Auctions
 on:
   schedule:
     - cron: '*/15 * * * *'  # Runs every 15 minutes
+  workflow_dispatch:
 
 jobs:
   close_auctions:
