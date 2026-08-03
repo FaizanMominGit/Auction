@@ -23,6 +23,4 @@ jobs:
           pip install firebase-admin pytz
 
       - name: Run the script
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./auction-d7ab9-firebase-adminsdk-fbsvc-0667fe910d.json
         run: python close_auctions.py

@@ -4,7 +4,7 @@ import pytz
 from datetime import datetime
 
 # Initialize Firebase
-cred_path = "auction-d7ab9-firebase-adminsdk-fbsvc-0667fe910d.json"  # Replace with your credentials file
+cred_path = "serviceAccountKey.json"
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred)
 
