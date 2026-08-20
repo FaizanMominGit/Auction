@@ -3,7 +3,7 @@ from firebase_admin import credentials, firestore, auth
 import pytz
 from datetime import datetime
 
-FALLBACK_USER_ID = "yBwGsrIfeIfY0FbssGsHtxzWxsG2"
+FALLBACK_USER_ID = "E3dxgsx4JwhvSpp30BiRU5nkUDe2"
 DATE_TIME_FORMAT = '%d/%m/%Y %I:%M %p'
 
 # Use the specific JSON key filename you provided earlier

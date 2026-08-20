@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> Log.e("AccountMenuDialog", "Error getting user document", e));
 
                 // Check if the user is an admin
-                if ("yBwGsrIfeIfY0FbssGsHtxzWxsG2".equals(uid)) {
+                if ("73i7Af65tufNCPvrqPMjbzMMLq22".equals(uid)|| "E3dxgsx4JwhvSpp30BiRU5nkUDe2".equals(uid) ) {
                     adminManageUsers.setVisibility(View.VISIBLE);
                 } else {
                     adminManageUsers.setVisibility(View.GONE);
