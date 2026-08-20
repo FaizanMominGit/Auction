@@ -24,21 +24,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Scanner;
 
 public class WalletFragment extends Fragment {
 
@@ -144,107 +147,52 @@ public class WalletFragment extends Fragment {
         }
 
         String currencyCode = getCurrencyCodeFromCountry(country);
-        if (currencyCode != null) {
-            String url = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_pufydwMbfP0UFTXKrPy29cUoM85wq5DtoWWR6wZx&base_currency=USD";
-            new Thread(() -> {
-                try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
+        if (currencyCode != null && !currencyCode.equals("USD")) {
+            // Using Frankfurter API (Free, no key required)
+            String url = "https://api.frankfurter.app/latest?from=USD&to=" + currencyCode;
 
-                    Scanner scanner = new Scanner(connection.getInputStream());
-                    StringBuilder response = new StringBuilder();
-                    while (scanner.hasNext()) {
-                        response.append(scanner.nextLine());
-                    }
-                    scanner.close();
+            RequestQueue queue = Volley.newRequestQueue(requireContext());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    response -> {
+                        try {
+                            JSONObject rates = response.getJSONObject("rates");
+                            double conversionRate = rates.getDouble(currencyCode);
+                            double convertedAmount = radianite * conversionRate;
 
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    JSONObject rates = jsonResponse.getJSONObject("data");
+                            // Update UI with the converted amount
+                            convertedAmountTextView.setText(String.format(Locale.getDefault(), "%s %.2f", currencyCode, convertedAmount));
+                        } catch (JSONException e) {
+                            Log.e("Currency Conversion", "JSON error", e);
+                            Toast.makeText(getContext(), "Conversion error", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> {
+                        Log.e("Currency Conversion", "Volley error", error);
+                        Toast.makeText(getContext(), "Failed to fetch rates", Toast.LENGTH_SHORT).show();
+                    });
 
-                    double conversionRate = rates.getDouble(currencyCode);
-                    double convertedAmount = radianite * conversionRate;
-
-                    // Update UI with the converted amount
-                    getActivity().runOnUiThread(() -> convertedAmountTextView.setText(String.format("%s %.2f", currencyCode, convertedAmount)));
-
-                } catch (Exception e) {
-                    Log.e("Currency Conversion", "Error fetching conversion rate", e);
-                }
-            }).start();
+            queue.add(jsonObjectRequest);
+        } else if ("USD".equals(currencyCode)) {
+            convertedAmountTextView.setText(String.format(Locale.getDefault(), "USD %.2f", radianite));
         }
     }
 
-    // Method to get the currency code from the country name
-    private String getCurrencyCodeFromCountry(String country) {
-        switch (country) {
-            case "Australia":
-                return "AUD";
-            case "Bulgaria":
-                return "BGN";
-            case "Brazil":
-                return "BRL";
-            case "Canada":
-                return "CAD";
-            case "Switzerland":
-                return "CHF";
-            case "China":
-                return "CNY";
-            case "Czech Republic":
-                return "CZK";
-            case "Denmark":
-                return "DKK";
-            case "European Union":
-                return "EUR";
-            case "United Kingdom":
-                return "GBP";
-            case "Hong Kong":
-                return "HKD";
-            case "Croatia":
-                return "HRK";
-            case "Hungary":
-                return "HUF";
-            case "Indonesia":
-                return "IDR";
-            case "India":
-                return "INR";
-            case "Iceland":
-                return "ISK";
-            case "Japan":
-                return "JPY";
-            case "South Korea":
-                return "KRW";
-            case "Mexico":
-                return "MXN";
-            case "Malaysia":
-                return "MYR";
-            case "Norway":
-                return "NOK";
-            case "New Zealand":
-                return "NZD";
-            case "Philippines":
-                return "PHP";
-            case "Poland":
-                return "PLN";
-            case "Romania":
-                return "RON";
-            case "Russia":
-                return "RUB";
-            case "Sweden":
-                return "SEK";
-            case "Singapore":
-                return "SGD";
-            case "Thailand":
-                return "THB";
-            case "Turkey":
-                return "TRY";
-            case "United States":
-                return "USD";
-            case "South Africa":
-                return "ZAR";
-            default:
-                return null;
+    // Modern method to get the currency code using Java Locale and Currency APIs
+    private String getCurrencyCodeFromCountry(String countryName) {
+        if (countryName == null || countryName.isEmpty() || countryName.equals("Unknown")) {
+            return "USD"; // Default fallback
         }
+
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (locale.getDisplayCountry().equalsIgnoreCase(countryName)) {
+                try {
+                    return Currency.getInstance(locale).getCurrencyCode();
+                } catch (Exception e) {
+                    return "USD";
+                }
+            }
+        }
+        return "USD"; // Default fallback
     }
 
     // Method to hide keyboard after input
