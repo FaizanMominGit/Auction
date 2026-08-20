@@ -281,6 +281,24 @@ For each closed auction with bids:
 - Removes user document from Firestore
 - Cleans up the deletion flag
 
+## Modernized Currency Conversion
+
+I have updated the currency conversion logic in the **Wallet** screen to use a more reliable and modern technique.
+
+### Changes Made
+
+#### 1. Key-less API (Frankfurter)
+Replaced the potentially expired `freecurrencyapi.com` with the **Frankfurter API** (`frankfurter.app`).
+- **Benefit**: No API key required, open-source, and highly reliable for general currency conversion from USD.
+
+#### 2. Modern Networking with Volley
+Migrated from manual `Thread` + `HttpURLConnection` to **Volley**.
+- **Benefit**: Better request management, automatic UI thread handling for responses, and more robust error handling.
+
+#### 3. Dynamic Currency Detection
+Replaced the long, manual `switch` statement with a dynamic lookup using `java.util.Currency` and `java.util.Locale`.
+- **Benefit**: Automatically supports almost every country in the world without needing to manually add case statements.
+
 ### Security Check
 All operations include authorization verification - they only proceed if the `server.isServer` flag is `true` in Firestore.
 
